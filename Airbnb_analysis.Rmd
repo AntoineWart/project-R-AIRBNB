@@ -1,0 +1,11 @@
+---
+title: "Airbnb_analysis"
+output: html_document
+---
+
+```{r}
+data = read.csv("data/train.csv")
+dim(data)   
+head(data) 
+```
+
