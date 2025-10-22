@@ -3,3 +3,110 @@ title: "Antoine"
 output: html_document
 ---
 
+```{r setup, include=FALSE,echo=FALSE}
+
+library(tidyverse)   
+library(lubridate)   
+library(janitor)     
+library(knitr)       
+library(scales)  
+```
+
+## Introduction
+
+This report explores the dynamics of the Airbnb market in New York City using a public dataset. The objective is to better understand price patterns, geographical trends, and the factors that influence rental values across the city.
+
+# Understanding the Dataset
+
+The dataset gathers detailed information about Airbnb listings across New York City. It covers variables related to pricing, location, property type, and host activity, providing a rich foundation to understand market dynamics.
+
+Before any analysis, the dataset is inspected to assess its structure and scope.
+
+```{r,echo=FALSE}
+# Import and clean column names
+
+airbnb_raw = read_csv("../data/train.csv", show_col_types = FALSE) |>
+clean_names()
+
+# Dimensions of the dataset
+
+n_rows = nrow(airbnb_raw)
+n_cols = ncol(airbnb_raw)
+
+kable(
+tibble(
+"Number of observations" = n_rows,
+"Number of variables" = n_cols
+),
+caption = "Dataset overview: size and scope"
+)
+
+```
+
+```{r,echo=FALSE}
+# Display column names
+
+kable(
+tibble("Column names" = colnames(airbnb_raw)),
+caption = "Variables available in the dataset"
+)
+```
+
+Data Quality and Preparation
+
+To ensure a reliable foundation for the analysis, several adjustments were made:
+
+-   Temporal data: the variable last_review was converted into a valid date format to allow time-based exploration.
+
+-   Missing information: listings with no reviews had missing values for reviews_per_month; these were replaced by 0, meaning no activity.
+
+-   Unrealistic values: listings with a price of 0 were removed, as such prices are not representative of the market.
+
+-   Non-relevant identifiers: variables like id, host_id, and host_name were excluded to focus on analytical information.
+
+After these steps, the dataset is now consistent, cleaned, and ready for exploration.
+
+```{r,echo=FALSE}
+# Apply all cleaning steps (technical, hidden)
+
+airbnb_clean = airbnb_raw |>
+mutate(
+last_review = suppressWarnings(ymd(last_review)),
+reviews_per_month = replace_na(reviews_per_month, 0)
+) |>
+filter(price > 0) |>
+select(-any_of(c("id", "host_id", "host_name")))
+
+# Display final dimensions after cleaning
+
+kable(
+tibble(
+"Observations after cleaning" = nrow(airbnb_clean),
+"Variables after cleaning" = ncol(airbnb_clean)
+),
+caption = "Dataset after cleaning and preparation"
+)
+```
+
+## Market Overview
+
+The cleaned dataset now provides a clear view of the Airbnb market across New York City.\
+This section explores the overall composition of the listings and the main factors that shape price dynamics.
+
+### General Distribution of Listings
+
+Most listings are concentrated in Manhattan and Brooklyn, which also represent the most active and expensive areas in the city.\
+Understanding how listings are distributed geographically helps identify the core zones of Airbnb activity.
+
+```{r,echo=FALSE}
+# Distribution by borough
+borough_summary = airbnb_clean |>
+  group_by(neighbourhood_group) |>
+  summarise(
+    listings = n(),
+    avg_price = mean(price, na.rm = TRUE)
+  ) |>
+  arrange(desc(listings))
+
+kable(borough_summary, caption = "Distribution of listings and average price by borough")
+```
