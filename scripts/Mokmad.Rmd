@@ -1,5 +1,113 @@
 ---
-title: "Mokmad"
-output: html_document
+title: "NYC Airbnb — Step 4: Modélisation"
+author: "Mokhmad"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    theme: flatly
+    css: styles.css
 ---
+```{r , include=FALSE, echo=FALSE, message=FALSE}
+knitr::purl("Antoine.Rmd", output = "Step_12_Clean.R") # Pour créer un fichier .R de la data qui a été nettoyé pour pouvoir la réutiliser sans re écrire tout le code
+source("Step_12_Clean.R", local = TRUE)
+```
 
+```{r, message=FALSE}
+# Vérification pour savoir si l'étape au dessus à bien fonctionner
+airbnb_clean
+summary(airbnb_clean$price)
+```
+
+
+Mise en place du log(price) qui est ce que les différents modèles vont devoir prédire et mise en place des différents facteurs qui vont influer sur ce log(price) pour l'entrainement des modèles
+Création d'une séparation dans la data pour avoir une partie d'entrainement (70%) et pour ensuite avoir une partie de test (30%)
+
+```{r}
+airbnb_clean <- airbnb_clean |>
+  mutate(
+    log_price = log1p(price),
+    room_type = as.factor(room_type),
+    neighbourhood_group = as.factor(neighbourhood_group),
+    number_of_reviews = as.numeric(number_of_reviews)
+  )
+
+set.seed(42)
+n <- nrow(airbnb_clean)
+idx <- sample.int(n, size = floor(0.7*n))
+train <- airbnb_clean[idx, ]
+test  <- airbnb_clean[-idx, ]
+```
+
+
+Entrainement de la régression linéaire + récupération des coefficients
+Les coefficients sont à interpreter en utilisant la formule:  exp(Coef) - 1 = % d'influence sur le prix du Airbnb 
+Et le signe du coef est très important car si le coef > 0 ca veut dire que le crière en question fait augmenter le prix de base alors que si 
+le coef < 0 le critère fait baisser le prix du Airbnb.
+```{r}
+lm_fit <- lm(log_price ~ neighbourhood_group + room_type + number_of_reviews, data = train)
+lm_sum <- summary(lm_fit)
+lm_sum
+```
+
+
+
+Mise en place de l'arbre de regression
+```{r}
+library(rpart)
+tree_fit <- rpart(log_price ~ neighbourhood_group + room_type + number_of_reviews,
+                  data = train, method = "anova",
+                  control = rpart.control(cp = 0.01, xval = 10)) # Méthode 'Anova' important car ici on veut une cible continue comme log(price)
+printcp(tree_fit)
+best_cp <- tree_fit$cptable[which.min(tree_fit$cptable[,"xerror"]), "CP"]
+tree_fit_pruned <- prune(tree_fit, cp = best_cp)
+tree_fit_pruned
+```
+
+
+
+On utilise les modèles avec la data de test pour mettre en place les prédictions
+```{r}
+# LM
+pred_log_lm_test  <- predict(lm_fit, newdata = test)
+pred_price_lm_test <- expm1(pred_log_lm_test)
+
+# Tree (taillé)
+pred_log_tree_test  <- predict(tree_fit_pruned, newdata = test)
+pred_price_tree_test <- expm1(pred_log_tree_test)
+```
+
+
+
+Calcule de la RMSE pour la régression linéaire et celle de l'arbre de régression
+```{r}
+rmse <- function(y_hat, y) sqrt(mean((y_hat - y)^2, na.rm = TRUE))
+
+rmse_lm   <- rmse(pred_price_lm_test,   test$price)
+rmse_tree <- rmse(pred_price_tree_test, test$price)
+
+tibble::tibble(model = c("lm","rpart"),
+               rmse  = c(rmse_lm, rmse_tree))
+```
+On obtiens environ 260 dollars de RMSE pour les 2 modèles de régression, on a un 1er quartile à 69 dollars et la médiane à 106 dollars ce qui fait qu'il y a une différence énorme et donc les résultats obtenus peuvent être juger inacceptable.
+
+
+
+Interpretation des coefficients de la régression linéaire 
+Pour chaque coef il faut le multiplier par 100 et on obtiens l'influence de critère sur le prix.
+Exemple: NeighbourHood = Brooklyn donne le coef 0.23 donc si le critère est valider pour le airbnb en question alors on prends le prix de base (118.90$) et on rajoute
+23% de cette valeur.
+```{r}
+coefs <- coefficients(lm_fit)
+effects_price <- expm1(coefs)
+round(effects_price, 2)
+```
+
+
+
+
+Interpretation de l'arbre de régression 
+```{R}
+tree_fit_pruned
+tree_fit_pruned$variable.importance
+```
