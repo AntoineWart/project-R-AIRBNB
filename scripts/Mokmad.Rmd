@@ -1,12 +1,6 @@
 ---
 title: "NYC Airbnb — Step 4: Modélisation"
 author: "Mokhmad"
-output:
-  html_document:
-    toc: true
-    toc_depth: 3
-    theme: flatly
-    css: styles.css
 ---
 ```{r , include=FALSE, echo=FALSE, message=FALSE}
 knitr::purl("Antoine.Rmd", output = "Step_12_Clean.R") # Pour créer un fichier .R de la data qui a été nettoyé pour pouvoir la réutiliser sans re écrire tout le code
