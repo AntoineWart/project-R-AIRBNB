@@ -3,3 +3,108 @@ title: "Charles"
 output: html_document
 ---
 
+```{r setup, include=FALSE,echo=FALSE}
+
+library(tidyverse)   
+library(lubridate)   
+library(janitor)     
+library(knitr)       
+library(scales)
+library(leaflet)
+library(shiny)
+library(ggplot2)
+library(dplyr)
+```
+
+```{r}
+data3 = read.csv("../data/train.csv")
+head(data3)
+max(data3[,10])
+
+
+```
+
+
+
+```{r}
+ui <- page_sidebar(
+  title = "AirBnB : New York",
+  sidebar = sidebar(
+    card(
+      card_header("Price"),
+      sliderInput(
+        "price",
+        "Set value",
+        min = 0,
+        max = 10000,
+        value = c(0,10000)
+      ),
+    ),
+    card(
+      card_header("Minimum of mean review"),
+      sliderInput(
+        "review",
+        "Set value",
+        min = 0,
+        max = 5,
+        value = 0
+      ),
+    )
+  ),
+  card(leafletOutput("map"))
+
+)
+
+
+# Define server logic ----
+server <- function(input, output) {
+
+dataFiltred=reactive({subset(data3,data3[,10]>input$price[1] &
+                data3[,10]<input$price[2] &
+                data3[,14]>input$review)
+})
+
+
+
+
+  
+output$map <- renderLeaflet({
+  
+  df=dataFiltred()
+  
+  long=c(df[,8])
+  lati=c(df[,7])
+  name=c(df[,2])
+  
+  leaflet(options=leafletOptions(
+  minZoom = 10,
+  maxZoom = 18,
+  dragging = TRUE
+)) %>%
+  
+  addProviderTiles("CartoDB.Positron")%>%
+  setView(lng = -74, lat = 40.7, zoom = 11)%>%
+  setMaxBounds(
+    lng1 = -73.7,
+    lat1 = 40.92,
+    lng2 = -74.3,
+    lat2 = 40.4
+  )%>%
+  addMarkers(lng=long,lat = lati,popup = name,clusterOptions=markerClusterOptions(
+showCoverageOnHover = TRUE,
+zoomToBoundsOnClick = TRUE,
+spiderfyOnMaxZoom = TRUE,
+removeOutsideVisibleBounds = TRUE,
+freezeAtZoom = FALSE
+) )
+  })
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+```
+
+
+```{r}
+ggplot(data3, mapping = aes(x = data3[,14], y = data3[,16]))+geom_point()
+```
