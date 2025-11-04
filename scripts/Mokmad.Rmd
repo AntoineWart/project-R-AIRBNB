@@ -1,6 +1,11 @@
 ---
 title: "NYC Airbnb — Step 4: Modélisation"
 author: "Mokhmad"
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
 ---
 ```{r , include=FALSE, echo=FALSE, message=FALSE}
 knitr::purl("Antoine.Rmd", output = "Step_12_Clean.R") # Pour créer un fichier .R de la data qui a été nettoyé pour pouvoir la réutiliser sans re écrire tout le code
@@ -88,13 +93,13 @@ On obtiens environ 260 dollars de RMSE pour les 2 modèles de régression, on a 
 
 
 Interpretation des coefficients de la régression linéaire 
-Pour chaque coef il faut le multiplier par 100 et on obtiens l'influence de critère sur le prix.
-Exemple: NeighbourHood = Brooklyn donne le coef 0.23 donc si le critère est valider pour le airbnb en question alors on prends le prix de base (118.90$) et on rajoute
-23% de cette valeur.
+Pour chaque coef il faut le multiplier par 100 et on obtiens l'influence du critère sur le prix en pourcentage.
 ```{r}
 coefs <- coefficients(lm_fit)
 effects_price <- expm1(coefs)
-round(effects_price, 2)
+percentOfInfluence <- c(effects_price["neighbourhood_groupBrooklyn"] * 100, effects_price["neighbourhood_groupManhattan"] * 100, effects_price["neighbourhood_groupQueens"] * 100, effects_price["neighbourhood_groupStaten Island"] * 100, effects_price["room_typePrivate room"] * 100, effects_price["room_typeShared room"] * 100)
+effects_price["(Intercept)"]
+percentOfInfluence
 ```
 
 
