@@ -14,6 +14,20 @@ library(leaflet)
 library(shiny)
 library(ggplot2)
 library(dplyr)
+library(bslib)
+```
+
+```{r , include=FALSE, echo=FALSE, message=FALSE}
+knitr::purl("Antoine.Rmd", output = "Step_12_Clean.R") # Pour créer un fichier .R de la data qui a été nettoyé pour pouvoir la réutiliser sans re écrire tout le code
+source("Step_12_Clean.R", local = TRUE)
+airbnb_clean
+```
+
+
+```{r}
+head(airbnb_clean)
+colnames(airbnb_clean[,13])
+max(airbnb_clean[,11])
 ```
 
 ```{r}
@@ -23,8 +37,6 @@ max(data3[,10])
 
 
 ```
-
-
 
 ```{r}
 ui <- page_sidebar(
@@ -41,13 +53,12 @@ ui <- page_sidebar(
       ),
     ),
     card(
-      card_header("Minimum of mean review"),
-      sliderInput(
-        "review",
-        "Set value",
-        min = 0,
-        max = 5,
-        value = 0
+      card_header("Type of room"),
+      checkboxGroupInput(
+        "room",
+        "Select all that apply",
+        choices = list("Entire home/apt" = "Entire home/apt", "Private room" = "Private room", "Shared room" = "Shared room"),
+        selected = 1
       ),
     )
   ),
@@ -59,12 +70,13 @@ ui <- page_sidebar(
 # Define server logic ----
 server <- function(input, output) {
 
-dataFiltred=reactive({subset(data3,data3[,10]>input$price[1] &
-                data3[,10]<input$price[2] &
-                data3[,14]>input$review)
+dataFiltred = reactive({
+  if (is.null(input$room) || length(input$room) == 0) {
+    subset(airbnb_clean, price > input$price[1] & price < input$price[2])
+  } else {
+    subset(airbnb_clean, price > input$price[1] & price < input$price[2] & room_type %in% input$room)
+  }
 })
-
-
 
 
   
@@ -72,9 +84,9 @@ output$map <- renderLeaflet({
   
   df=dataFiltred()
   
-  long=c(df[,8])
-  lati=c(df[,7])
-  name=c(df[,2])
+  long=c(df$longitude)
+  lati=c(df$latitude)
+  name=c(df$name)
   
   leaflet(options=leafletOptions(
   minZoom = 10,
@@ -104,7 +116,24 @@ freezeAtZoom = FALSE
 shinyApp(ui = ui, server = server)
 ```
 
+```{r}
+ggplot(airbnb_clean, aes(x = availability_365, y = number_of_reviews)) +
+  geom_hex()+
+  theme_minimal()
+```
 
 ```{r}
-ggplot(data3, mapping = aes(x = data3[,14], y = data3[,16]))+geom_point()
+ggplot(airbnb_clean, aes(x = room_type)) +  geom_bar(fill = "steelblue") +  labs(title = "Distribution of Listings by Room Type",       x = "Room Type",       y = "Number of Listings") +  theme_minimal()
+```
+
+```{r}
+#Optionnel : filtrer les quartiers les plus fréquents pour plus de lisibilité
+top_neighbourhoods <- airbnb_clean %>%  count(neighbourhood) %>%
+  top_n(10, n) %>%
+  pull(neighbourhood)
+
+filtered_data <- airbnb_clean %>%
+  filter(neighbourhood %in% top_neighbourhoods)
+# Visualisation
+ggplot(filtered_data, aes(x = neighbourhood, y = price)) +  geom_boxplot(fill = "lightblue") +  scale_y_log10() +  labs(title = "Distribution of Prices by Neighbourhood (Log Scale)",       x = "Neighbourhood",       y = "Price (log scale)") +  theme_minimal() +  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
