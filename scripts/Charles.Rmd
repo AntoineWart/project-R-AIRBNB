@@ -60,6 +60,15 @@ ui <- page_sidebar(
         choices = list("Entire home/apt" = "Entire home/apt", "Private room" = "Private room", "Shared room" = "Shared room"),
         selected = 1
       ),
+    ),
+    card(
+      card_header("Neighbourhood group"),
+      checkboxGroupInput(
+        "neighbourhood_group",
+        "Select all that apply",
+        choices = list("Bronx" = "Bronx", "Brooklyn" = "Brookyn", "Manhattan" = "Manhattan", "Queens" = "Queens", "Staten Island" = "Staten Islander"),
+        selected = 1
+      ),
     )
   ),
   card(leafletOutput("map"))
@@ -70,19 +79,22 @@ ui <- page_sidebar(
 # Define server logic ----
 server <- function(input, output) {
 
-dataFiltred = reactive({
-  if (is.null(input$room) || length(input$room) == 0) {
-    subset(airbnb_clean, price > input$price[1] & price < input$price[2])
-  } else {
-    subset(airbnb_clean, price > input$price[1] & price < input$price[2] & room_type %in% input$room)
-  }
+
+
+dataFiltered <- reactive({
+  req(input$price, length(input$price) == 2)
+
+  airbnb_clean %>%
+    filter(dplyr::between(price, input$price[1], input$price[2])) %>%
+    { if (!is.null(input$room) && length(input$room) > 0) filter(., room_type %in% input$room) else . } %>%
+    { if (!is.null(input$neighbourhood_group) && length(input$neighbourhood_group) > 0) filter(., neighbourhood_group %in% input$neighbourhood_group) else . }
 })
 
 
   
 output$map <- renderLeaflet({
   
-  df=dataFiltred()
+  df=dataFiltered()
   
   long=c(df$longitude)
   lati=c(df$latitude)
@@ -128,12 +140,65 @@ ggplot(airbnb_clean, aes(x = room_type)) +  geom_bar(fill = "steelblue") +  labs
 
 ```{r}
 #Optionnel : filtrer les quartiers les plus fréquents pour plus de lisibilité
-top_neighbourhoods <- airbnb_clean %>%  count(neighbourhood) %>%
-  top_n(10, n) %>%
-  pull(neighbourhood)
+#top_neighbourhoods <- airbnb_clean %>%  count(neighbourhood) %>%
+ # top_n(10, n) %>%
+  #pull(neighbourhood)
 
-filtered_data <- airbnb_clean %>%
-  filter(neighbourhood %in% top_neighbourhoods)
+filtered_data <- airbnb_clean #%>%
+ # filter(neighbourhood %in% top_neighbourhoods)
 # Visualisation
-ggplot(filtered_data, aes(x = neighbourhood, y = price)) +  geom_boxplot(fill = "lightblue") +  scale_y_log10() +  labs(title = "Distribution of Prices by Neighbourhood (Log Scale)",       x = "Neighbourhood",       y = "Price (log scale)") +  theme_minimal() +  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+b= ggplot(filtered_data, aes(x = neighbourhood, y = price)) +  geom_boxplot(fill = "lightblue") +  scale_y_log10() +  labs(title = "Distribution of Prices by Neighbourhood (Log Scale)",       x = "Neighbourhood",       y = "Price (log scale)") +  theme_minimal() +  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
+  
+a = ggplot(filtered_data, aes(x = neighbourhood_group, y = price)) +  geom_boxplot(fill = "lightblue") +  scale_y_log10() +  labs(title = "Distribution of Prices by Neighbourhood (Log Scale)",       x = "Neighbourhood",       y = "Price (log scale)") +  theme_minimal() +  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+b
+a
+```
+
+```{r}
+library(ggplot2)
+
+# Option 1: prendre les groupes présents dans filtered_data
+groups <- sort(unique(stats::na.omit(filtered_data$neighbourhood_group)))
+
+# Option 2 (si tu veux forcer l'ordre fixe des 5 groupes connus) :
+# groups <- c("Bronx", "Brooklyn", "Manhattan", "Queens", "Staten Island")
+
+plots_by_group <- lapply(groups, function(g) {
+  df <- subset(filtered_data, neighbourhood_group == g)
+  if (nrow(df) == 0) {
+    # Graphique "vide" si le groupe ne figure pas dans les données filtrées
+    return(
+      ggplot() + 
+        theme_void() + 
+        labs(title = paste("Aucune donnée pour", g))
+    )
+  }
+  ggplot(df, aes(x = reorder(neighbourhood, price, FUN = median), y = price)) +
+    geom_boxplot(fill = "lightblue", outlier.alpha = 0.2) +
+    scale_y_log10() +
+    coord_flip() +  # plus lisible avec beaucoup de catégories
+    labs(
+      title = paste("Distribution des prix par neighbourhood —", g, "(échelle log)"),
+      x = "Neighbourhood",
+      y = "Prix (log)"
+    ) +
+    theme_minimal() +
+    theme(axis.text.y = element_text(size = 8))
+})
+
+names(plots_by_group) <- groups
+
+# 👉 Afficher tous les graphiques l'un après l'autre (RStudio les affichera à la suite)
+for (p in plots_by_group) print(p)
+
+# (Optionnel) Enregistrer chaque graphique
+# dir.create("plots", showWarnings = FALSE)
+# for (i in seq_along(plots_by_group)) {
+#   ggsave(
+#     filename = file.path("plots", paste0("boxplot_", names(plots_by_group)[i], ".png")),
+#     plot = plots_by_group[[i]],
+#     width = 9, height = 6, dpi = 150
+#   )
+# }
+
 ```
