@@ -1,0 +1,602 @@
+---
+title: "NYC Airbnb Market Analysis"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: cosmo
+    css: dashboard_styles.css
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(knitr)
+library(scales)
+library(ggplot2)
+library(plotly)
+library(DT)
+library(leaflet)
+library(rpart)
+
+# Charger et nettoyer les données
+airbnb_raw <- read_csv("data/train.csv", show_col_types = FALSE) |>
+  clean_names()
+
+airbnb_clean <- airbnb_raw |>
+  mutate(
+    last_review = suppressWarnings(ymd(last_review)),
+    reviews_per_month = replace_na(reviews_per_month, 0)
+  ) |>
+  filter(price > 0) |>
+  select(-any_of(c("id", "host_id", "host_name")))
+
+# Préparer pour la modélisation
+airbnb_model <- airbnb_clean |>
+  mutate(
+    log_price = log1p(price),
+    room_type = as.factor(room_type),
+    neighbourhood_group = as.factor(neighbourhood_group),
+    number_of_reviews = as.numeric(number_of_reviews)
+  )
+
+set.seed(42)
+n <- nrow(airbnb_model)
+idx <- sample.int(n, size = floor(0.7*n))
+train <- airbnb_model[idx, ]
+test  <- airbnb_model[-idx, ]
+
+# Modèles
+lm_fit <- lm(log_price ~ neighbourhood_group + room_type + number_of_reviews, data = train)
+tree_fit <- rpart(
+  log_price ~ neighbourhood_group + room_type + number_of_reviews,
+  data = train,
+  method = "anova",
+  control = rpart.control(cp = 0.01, xval = 10)
+)
+best_cp <- tree_fit$cptable[which.min(tree_fit$cptable[, "xerror"]), "CP"]
+tree_fit_pruned <- prune(tree_fit, cp = best_cp)
+
+# Prédictions
+pred_log_lm_test <- predict(lm_fit, newdata = test)
+pred_price_lm_test <- expm1(pred_log_lm_test)
+pred_log_tree_test <- predict(tree_fit_pruned, newdata = test)
+pred_price_tree_test <- expm1(pred_log_tree_test)
+
+# RMSE
+rmse <- function(y_hat, y) sqrt(mean((y_hat - y)^2, na.rm = TRUE))
+rmse_lm <- rmse(pred_price_lm_test, test$price)
+rmse_tree <- rmse(pred_price_tree_test, test$price)
+```
+
+Overview {data-icon="fa-home"}
+=====================================
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Key Metrics
+
+```{r}
+total_listings <- nrow(airbnb_clean)
+avg_price <- mean(airbnb_clean$price)
+median_price <- median(airbnb_clean$price)
+total_boroughs <- n_distinct(airbnb_clean$neighbourhood_group)
+
+valueBox(
+  format(total_listings, big.mark = ","),
+  caption = "Total Listings",
+  icon = "fa-building",
+  color = "#667eea"
+)
+```
+
+### Average Price
+
+```{r}
+valueBox(
+  paste0("$", round(avg_price, 0)),
+  caption = "Average Price per Night",
+  icon = "fa-dollar-sign",
+  color = "#764ba2"
+)
+```
+
+### Median Price
+
+```{r}
+valueBox(
+  paste0("$", round(median_price, 0)),
+  caption = "Median Price per Night",
+  icon = "fa-chart-line",
+  color = "#f093fb"
+)
+```
+
+### Boroughs Covered
+
+```{r}
+valueBox(
+  total_boroughs,
+  caption = "NYC Boroughs",
+  icon = "fa-map-marker-alt",
+  color = "#4facfe"
+)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Distribution of Listings by Borough (Interactive)
+
+```{r}
+borough_data <- airbnb_clean |>
+  count(neighbourhood_group) |>
+  arrange(desc(n))
+
+plot_ly(borough_data, 
+        x = ~reorder(neighbourhood_group, n), 
+        y = ~n,
+        type = 'bar',
+        marker = list(color = c('#FF385C', '#FFD23F', '#00539B', '#FF6B35', '#BC4749')),
+        text = ~paste0(format(n, big.mark = ","), " listings"),
+        hovertemplate = '<b>%{x}</b><br>Listings: %{y:,}<extra></extra>') |>
+  layout(
+    title = "",
+    xaxis = list(title = "Borough"),
+    yaxis = list(title = "Number of Listings"),
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    paper_bgcolor = 'rgba(0,0,0,0)'
+  )
+```
+
+### Price Distribution by Borough
+
+```{r}
+plot_ly(airbnb_clean, 
+        x = ~neighbourhood_group, 
+        y = ~price,
+        type = 'box',
+        color = ~neighbourhood_group,
+        colors = c('#667eea', '#764ba2', '#f093fb', '#4facfe', '#c471f5')) |>
+  layout(
+    title = "",
+    xaxis = list(title = "Borough"),
+    yaxis = list(title = "Price ($)", type = "log"),
+    showlegend = FALSE,
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    paper_bgcolor = 'rgba(0,0,0,0)'
+  )
+```
+
+Visualizations {data-icon="fa-chart-bar"}
+=====================================
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Room Type Distribution
+
+```{r}
+room_data <- airbnb_clean |>
+  count(room_type) |>
+  mutate(pct = n / sum(n) * 100)
+
+plot_ly(room_data, 
+        labels = ~room_type, 
+        values = ~n,
+        type = 'pie',
+        textposition = 'inside',
+        textinfo = 'label+percent',
+        marker = list(colors = c('#667eea', '#764ba2', '#f093fb'),
+                     line = list(color = '#FFFFFF', width = 2))) |>
+  layout(
+    title = "",
+    showlegend = TRUE,
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    paper_bgcolor = 'rgba(0,0,0,0)'
+  )
+```
+
+### Availability vs Reviews (Interactive)
+
+```{r}
+sample_data <- airbnb_clean |>
+  sample_n(min(5000, nrow(airbnb_clean)))
+
+plot_ly(sample_data, 
+        x = ~availability_365, 
+        y = ~number_of_reviews,
+        type = 'scatter',
+        mode = 'markers',
+        marker = list(size = 5, 
+                     color = ~price,
+                     colorscale = 'Viridis',
+                     showscale = TRUE,
+                     colorbar = list(title = "Price ($)")),
+        text = ~paste0("Price: $", price, 
+                      "<br>Available: ", availability_365, " days",
+                      "<br>Reviews: ", number_of_reviews),
+        hovertemplate = '%{text}<extra></extra>') |>
+  layout(
+    title = "",
+    xaxis = list(title = "Days Available per Year"),
+    yaxis = list(title = "Number of Reviews"),
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    paper_bgcolor = 'rgba(0,0,0,0)'
+  )
+```
+
+Column {data-width=500}
+-----------------------------------------------------------------------
+
+### Price Comparison by Room Type
+
+```{r}
+plot_ly(airbnb_clean, 
+        x = ~room_type, 
+        y = ~price,
+        type = 'violin',
+        color = ~room_type,
+        colors = c('#667eea', '#764ba2', '#f093fb'),
+        box = list(visible = TRUE),
+        meanline = list(visible = TRUE)) |>
+  layout(
+    title = "",
+    xaxis = list(title = "Room Type"),
+    yaxis = list(title = "Price ($)", type = "log"),
+    showlegend = FALSE,
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    paper_bgcolor = 'rgba(0,0,0,0)'
+  )
+```
+
+### Average Price by Borough and Room Type
+
+```{r}
+avg_price_data <- airbnb_clean |>
+  group_by(neighbourhood_group, room_type) |>
+  summarise(avg_price = mean(price), .groups = 'drop')
+
+plot_ly(avg_price_data, 
+        x = ~neighbourhood_group, 
+        y = ~avg_price,
+        color = ~room_type,
+        colors = c('#667eea', '#764ba2', '#f093fb'),
+        type = 'bar',
+        text = ~paste0("$", round(avg_price, 0)),
+        textposition = 'outside',
+        hovertemplate = '<b>%{x}</b><br>%{data.name}<br>Avg Price: $%{y:.0f}<extra></extra>') |>
+  layout(
+    title = "",
+    xaxis = list(title = "Borough"),
+    yaxis = list(title = "Average Price ($)"),
+    barmode = 'group',
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    paper_bgcolor = 'rgba(0,0,0,0)'
+  )
+```
+
+Map {data-icon="fa-map"}
+=====================================
+
+Column {data-width=1000}
+-----------------------------------------------------------------------
+
+### Interactive Map of NYC Airbnb Listings
+
+```{r}
+# Échantillon pour la carte
+map_sample <- airbnb_clean |>
+  sample_n(min(2000, nrow(airbnb_clean)))
+
+# Définir les couleurs par type de chambre
+color_palette <- colorFactor(
+  palette = c('#667eea', '#764ba2', '#f093fb'),
+  domain = map_sample$room_type
+)
+
+leaflet(map_sample) |>
+  addProviderTiles(providers$CartoDB.Positron) |>
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    radius = 4,
+    color = ~color_palette(room_type),
+    fillOpacity = 0.6,
+    stroke = TRUE,
+    weight = 1,
+    popup = ~paste0(
+      "<strong>", name, "</strong><br>",
+      "Borough: ", neighbourhood_group, "<br>",
+      "Neighbourhood: ", neighbourhood, "<br>",
+      "Room Type: ", room_type, "<br>",
+      "Price: $", price, "<br>",
+      "Reviews: ", number_of_reviews
+    )
+  ) |>
+  addLegend(
+    position = "bottomright",
+    pal = color_palette,
+    values = ~room_type,
+    title = "Room Type",
+    opacity = 0.8
+  )
+```
+
+Data Table {data-icon="fa-table"}
+=====================================
+
+Column {data-width=1000}
+-----------------------------------------------------------------------
+
+### Explore All Listings (Interactive Table)
+
+```{r}
+table_data <- airbnb_clean |>
+  select(
+    name,
+    neighbourhood_group,
+    neighbourhood,
+    room_type,
+    price,
+    minimum_nights,
+    number_of_reviews,
+    availability_365
+  ) |>
+  mutate(
+    price = paste0("$", price)
+  )
+
+datatable(
+  table_data,
+  colnames = c(
+    'Listing Name' = 'name',
+    'Borough' = 'neighbourhood_group',
+    'Neighbourhood' = 'neighbourhood',
+    'Room Type' = 'room_type',
+    'Price' = 'price',
+    'Min Nights' = 'minimum_nights',
+    'Reviews' = 'number_of_reviews',
+    'Availability' = 'availability_365'
+  ),
+  filter = 'top',
+  options = list(
+    pageLength = 25,
+    scrollX = TRUE,
+    autoWidth = TRUE,
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel')
+  ),
+  extensions = 'Buttons',
+  class = 'display compact'
+)
+```
+
+Models {data-icon="fa-robot"}
+=====================================
+
+Column {data-width=400}
+-----------------------------------------------------------------------
+
+### Model Performance
+
+```{r}
+gauge(
+  round(rmse_lm, 0),
+  min = 0,
+  max = 500,
+  symbol = '$',
+  label = "Linear Regression RMSE",
+  gaugeSectors(
+    success = c(0, 150),
+    warning = c(150, 300),
+    danger = c(300, 500)
+  )
+)
+```
+
+### Tree Model Performance
+
+```{r}
+gauge(
+  round(rmse_tree, 0),
+  min = 0,
+  max = 500,
+  symbol = '$',
+  label = "Regression Tree RMSE",
+  gaugeSectors(
+    success = c(0, 150),
+    warning = c(150, 300),
+    danger = c(300, 500)
+  )
+)
+```
+
+### R² Score (Linear Model)
+
+```{r}
+r2_lm <- summary(lm_fit)$r.squared
+gauge(
+  round(r2_lm * 100, 1),
+  min = 0,
+  max = 100,
+  symbol = '%',
+  label = "R² Score",
+  gaugeSectors(
+    danger = c(0, 30),
+    warning = c(30, 60),
+    success = c(60, 100)
+  )
+)
+```
+
+Column {data-width=600}
+-----------------------------------------------------------------------
+
+### Model Comparison
+
+```{r}
+comparison_data <- tibble(
+  Model = c("Linear Regression", "Regression Tree"),
+  RMSE = c(rmse_lm, rmse_tree),
+  Type = c("Linear", "Tree-based")
+)
+
+plot_ly(comparison_data, 
+        x = ~Model, 
+        y = ~RMSE,
+        type = 'bar',
+        marker = list(color = c('#667eea', '#764ba2')),
+        text = ~paste0("$", round(RMSE, 0)),
+        textposition = 'outside',
+        hovertemplate = '<b>%{x}</b><br>RMSE: $%{y:.2f}<extra></extra>') |>
+  layout(
+    title = "RMSE Comparison (Lower is Better)",
+    xaxis = list(title = ""),
+    yaxis = list(title = "RMSE ($)"),
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    paper_bgcolor = 'rgba(0,0,0,0)'
+  )
+```
+
+### Variable Importance (Regression Tree)
+
+```{r}
+importance_data <- tibble(
+  Variable = names(tree_fit_pruned$variable.importance),
+  Importance = tree_fit_pruned$variable.importance
+) |>
+  mutate(Share = Importance / sum(Importance) * 100) |>
+  arrange(desc(Share))
+
+plot_ly(importance_data, 
+        x = ~Share, 
+        y = ~reorder(Variable, Share),
+        type = 'bar',
+        orientation = 'h',
+        marker = list(color = '#764ba2'),
+        text = ~paste0(round(Share, 1), "%"),
+        textposition = 'outside',
+        hovertemplate = '<b>%{y}</b><br>Importance: %{x:.1f}%<extra></extra>') |>
+  layout(
+    title = "",
+    xaxis = list(title = "Relative Importance (%)"),
+    yaxis = list(title = ""),
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    paper_bgcolor = 'rgba(0,0,0,0)'
+  )
+```
+
+Column {data-width=400}
+-----------------------------------------------------------------------
+
+### Coefficient Effects (Linear Regression)
+
+```{r}
+coefs <- coefficients(lm_fit)
+effects_price <- expm1(coefs)
+percentOfInfluence <- c(
+  effects_price["neighbourhood_groupBrooklyn"] * 100,
+  effects_price["neighbourhood_groupManhattan"] * 100,
+  effects_price["neighbourhood_groupQueens"] * 100,
+  effects_price["neighbourhood_groupStaten Island"] * 100,
+  effects_price["room_typePrivate room"] * 100,
+  effects_price["room_typeShared room"] * 100
+)
+
+coef_data <- tibble(
+  Variable = c(
+    "Brooklyn",
+    "Manhattan",
+    "Queens",
+    "Staten Island",
+    "Private Room",
+    "Shared Room"
+  ),
+  Effect = percentOfInfluence
+) |>
+  arrange(desc(Effect))
+
+plot_ly(coef_data, 
+        x = ~Effect, 
+        y = ~reorder(Variable, Effect),
+        type = 'bar',
+        orientation = 'h',
+        marker = list(color = ~ifelse(Effect > 0, '#667eea', '#f093fb')),
+        text = ~paste0(ifelse(Effect > 0, "+", ""), round(Effect, 1), "%"),
+        textposition = 'outside',
+        hovertemplate = '<b>%{y}</b><br>Effect: %{x:.2f}%<extra></extra>') |>
+  layout(
+    title = "Price Impact by Factor",
+    xaxis = list(title = "Effect on Price (%)"),
+    yaxis = list(title = ""),
+    plot_bgcolor = 'rgba(0,0,0,0)',
+    paper_bgcolor = 'rgba(0,0,0,0)'
+  )
+```
+
+About {data-icon="fa-info-circle" style="position:relative;"}
+=====================================
+
+Column {data-width=1000 style="overflow-y:auto;"} 
+-----------------------------------------------------------------------
+
+### About This Dashboard
+
+<div style="padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white; margin: 20px;">
+
+<h2 style="color: white; font-weight: bold;">NYC Airbnb Market Analysis Dashboard</h2>
+
+<p style="font-size: 1.1em; line-height: 1.8;">
+This interactive dashboard explores the dynamics of the Airbnb market in New York City. It provides insights into:
+</p>
+
+<ul style="font-size: 1.05em; line-height: 2;">
+  <li><strong>Market Overview:</strong> Key metrics and distribution patterns across NYC boroughs</li>
+  <li><strong>Visualizations:</strong> Interactive charts showing price patterns, room types, and availability</li>
+  <li><strong>Geographic Analysis:</strong> Interactive map displaying listings across the city</li>
+  <li><strong>Data Exploration:</strong> Searchable and filterable table of all listings</li>
+  <li><strong>Predictive Models:</strong> Machine learning models comparing Linear Regression and Regression Trees</li>
+</ul>
+
+<h3 style="color: white; margin-top: 30px;">Dataset Information</h3>
+<p style="font-size: 1.05em;">
+The dataset contains <strong>`r format(nrow(airbnb_clean), big.mark = ",")`</strong> Airbnb listings across NYC's five boroughs, with information on pricing, location, room type, and host activity.
+</p>
+
+<h3 style="color: white; margin-top: 30px;">Authors</h3>
+<p style="font-size: 1.1em; font-weight: 600;">
+Antoine, Charles, Mokhmad
+</p>
+
+<p style="font-size: 0.9em; margin-top: 30px; opacity: 0.8;">
+</p>
+
+</div>
+
+### Key Findings {.scrollable-content}
+
+<div class="info-card scrollable-section" style="padding: 25px; background: white; border-radius: 10px; border-left: 5px solid #667eea; margin: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+
+<h4 style="color: #667eea;">📊 Market Insights</h4>
+
+<ul style="line-height: 2;">
+  <li><strong>Manhattan and Brooklyn</strong> dominate the market with the highest concentration of listings</li>
+  <li><strong>Entire homes/apartments</strong> represent the most common room type</li>
+  <li><strong>Median price: $`r round(median_price, 0)`</strong> per night across all boroughs</li>
+  <li><strong>Price variation</strong> is significant within boroughs, with some neighborhoods commanding premium rates</li>
+</ul>
+
+<h4 style="color: #764ba2; margin-top: 25px;">🤖 Model Performance</h4>
+
+<ul style="line-height: 2;">
+  <li>Both models achieve similar RMSE of approximately <strong>$`r round(rmse_lm, 0)`</strong></li>
+  <li><strong>Room type</strong> is the most important predictor (~75% importance in tree model)</li>
+  <li><strong>Location</strong> (borough/neighborhood) accounts for ~22% of price variation</li>
+  <li>The models explain <strong>`r round(summary(lm_fit)$r.squared * 100, 1)`%</strong> of price variance</li>
+</ul>
+
+</div>

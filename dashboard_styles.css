@@ -1,0 +1,469 @@
+/* ===================================
+   NYC Airbnb Dashboard - Themed Styles
+   Airbnb Red + NYC Colors
+   =================================== */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Circular:wght@700&display=swap');
+
+/* Color Variables - Airbnb + NYC Theme */
+:root {
+  --airbnb-red: #FF385C;
+  --airbnb-dark: #222222;
+  --airbnb-grey: #717171;
+  --airbnb-light: #F7F7F7;
+  --nyc-yellow: #FFD23F;
+  --nyc-blue: #00539B;
+  --nyc-orange: #FF6B35;
+  --brooklyn-brick: #BC4749;
+  --central-park: #6BCB77;
+}
+
+/* Global Overrides */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 14px;
+  color: var(--airbnb-dark);
+  background-color: var(--airbnb-light);
+}
+
+/* Dashboard Title */
+.navbar-brand {
+  font-family: 'Circular', 'Inter', sans-serif;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: white !important;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Navbar Styling - Airbnb Red avec gradient NYC */
+.navbar-inverse {
+  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%) !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(255, 56, 92, 0.3);
+}
+
+.navbar-inverse .navbar-nav > li > a {
+  color: white !important;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 15px 20px !important;
+}
+
+.navbar-inverse .navbar-nav > li > a:hover,
+.navbar-inverse .navbar-nav > .active > a {
+  background: rgba(255, 255, 255, 0.2) !important;
+  transform: translateY(-2px);
+}
+
+/* Value Boxes - Couleurs NYC */
+.value-box {
+  border-radius: 12px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+  border: none !important;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.value-box:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Style spécifique pour chaque value box selon la couleur */
+.bg-primary {
+  background: linear-gradient(135deg, var(--airbnb-red) 0%, #ff1744 100%) !important;
+}
+
+.bg-info {
+  background: linear-gradient(135deg, var(--nyc-blue) 0%, #0066cc 100%) !important;
+}
+
+.bg-warning {
+  background: linear-gradient(135deg, var(--nyc-yellow) 0%, #ffa000 100%) !important;
+}
+
+.bg-success {
+  background: linear-gradient(135deg, var(--central-park) 0%, #4caf50 100%) !important;
+}
+
+.value-box .inner {
+  padding: 25px !important;
+}
+
+.value-box .value {
+  font-size: 2.5em !important;
+  font-weight: 700 !important;
+  font-family: 'Circular', 'Inter', sans-serif;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.value-box .caption {
+  font-size: 1em !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+  margin-top: 10px;
+  opacity: 0.95;
+}
+
+.value-box .icon {
+  font-size: 4em !important;
+  opacity: 0.25;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+}
+
+/* Charts */
+.chart-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  background: white;
+  margin: 10px 0;
+  border-top: 4px solid var(--airbnb-red);
+}
+
+.chart-title {
+  font-family: 'Circular', 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.3em;
+  color: var(--airbnb-dark);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 3px solid var(--airbnb-red);
+}
+
+/* Plotly Charts - Personnalisation */
+.plotly {
+  border-radius: 8px;
+}
+
+.plotly .modebar {
+  background: var(--airbnb-red) !important;
+  border-radius: 6px;
+}
+
+/* Gauge Charts */
+.gauge-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 20px;
+  margin: 10px 0;
+  border-left: 5px solid var(--nyc-orange);
+}
+
+/* DataTables */
+.dataTables_wrapper {
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid var(--airbnb-red);
+}
+
+table.dataTable thead th {
+  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%);
+  color: white !important;
+  font-weight: 600;
+  padding: 15px !important;
+  border: none !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.85em;
+}
+
+table.dataTable tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+table.dataTable tbody tr:hover {
+  background-color: #fff5f7 !important;
+}
+
+table.dataTable tbody td {
+  padding: 12px !important;
+  border-bottom: 1px solid #ffe0e6 !important;
+  color: var(--airbnb-dark);
+}
+
+/* Alternating rows */
+table.dataTable tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Search Box */
+.dataTables_filter input {
+  border: 2px solid var(--airbnb-red) !important;
+  border-radius: 8px !important;
+  padding: 8px 15px !important;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.dataTables_filter input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.2);
+  border-color: var(--brooklyn-brick);
+}
+
+/* Pagination */
+.dataTables_paginate .paginate_button.current {
+  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 6px !important;
+}
+
+.dataTables_paginate .paginate_button:hover {
+  background: var(--airbnb-red) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 6px !important;
+}
+
+/* Leaflet Map */
+.leaflet-container {
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  border-top: 3px solid var(--airbnb-red);
+}
+
+.leaflet-popup-content {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.leaflet-popup-content strong {
+  color: var(--airbnb-red);
+  font-weight: 600;
+}
+
+/* Custom marker colors */
+.leaflet-marker-icon {
+  filter: hue-rotate(340deg) saturate(1.3);
+}
+
+/* Section Headers */
+.section.level1 {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 10px 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.section.level2 {
+  background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 15px 0;
+  border-left: 5px solid var(--airbnb-red);
+}
+
+.section h2 {
+  font-family: 'Circular', 'Inter', sans-serif;
+  color: var(--airbnb-dark);
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.section h3 {
+  color: var(--brooklyn-brick);
+  font-weight: 600;
+  margin-top: 25px;
+  margin-bottom: 15px;
+  padding-left: 15px;
+  border-left: 4px solid var(--nyc-orange);
+}
+
+/* Links */
+a {
+  color: var(--airbnb-red) !important;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--brooklyn-brick) !important;
+}
+
+/* Buttons */
+button, .btn {
+  background: var(--airbnb-red) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+button:hover, .btn:hover {
+  background: var(--brooklyn-brick) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.3) !important;
+}
+
+/* Custom Scrollbar - NYC Yellow accent */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--airbnb-light);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--nyc-orange) 100%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brooklyn-brick);
+}
+
+/* Info boxes pour About page */
+.info-card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin: 20px 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border-top: 4px solid var(--airbnb-red);
+}
+
+.hero-banner {
+  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%);
+  color: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(255, 56, 92, 0.3);
+  margin: 20px 0;
+}
+
+.hero-banner h2, 
+.hero-banner h3, 
+.hero-banner h4 {
+  color: white !important;
+}
+
+/* Highlight text - NYC Yellow */
+mark, .highlight {
+  background: var(--nyc-yellow);
+  color: var(--airbnb-dark);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Badges/Tags */
+.badge {
+  background: var(--nyc-yellow) !important;
+  color: var(--airbnb-dark) !important;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85em;
+}
+
+/* Force le scroll pour la page About uniquement */
+#about .chart-wrapper,
+#about .chart-stage,
+#about .chart-shim,
+#about .section.level3 {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  min-height: 0 !important;
+  max-height: 100vh !important;
+}
+
+/* Pour la section Key Findings spécifiquement */
+.scrollable-section {
+  max-height: 500px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  display: block !important;
+  min-height: 0 !important;
+}
+
+/* Force le scroll sur tous les conteneurs dans About */
+#about .chart-stage-flex {
+  overflow-y: auto !important;
+  height: 400px !important; /* Hauteur fixe */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .value-box .value {
+    font-size: 2em !important;
+  }
+  
+  .navbar-brand {
+    font-size: 18px !important;
+  }
+  
+  .chart-title {
+    font-size: 1.1em;
+  }
+  
+  .hero-banner {
+    padding: 25px;
+  }
+}
+
+/* Animations avec couleurs Airbnb */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseRed {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 56, 92, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 56, 92, 0);
+  }
+}
+
+.value-box,
+.chart-wrapper,
+.gauge-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.value-box:hover {
+  animation: pulseRed 1.5s infinite;
+}
+
+/* Print styles */
+@media print {
+  .navbar,
+  .dataTables_filter,
+  .dataTables_paginate {
+    display: none !important;
+  }
+  
+  .value-box,
+  .chart-wrapper {
+    page-break-inside: avoid;
+  }
+  
+  * {
+    color: var(--airbnb-dark) !important;
+  }
+}

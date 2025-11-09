@@ -1,0 +1,518 @@
+/* ===================================
+   NYC Airbnb Analysis - Airbnb Theme
+   Colors: Airbnb Red + NYC Palette
+   =================================== */
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Circular:wght@700&display=swap');
+
+/* Color Variables */
+:root {
+  --airbnb-red: #FF385C;
+  --airbnb-dark: #222222;
+  --airbnb-grey: #717171;
+  --airbnb-light: #F7F7F7;
+  --nyc-yellow: #FFD23F;
+  --nyc-blue: #00539B;
+  --nyc-orange: #FF6B35;
+  --brooklyn-brick: #BC4749;
+  --central-park: #6BCB77;
+}
+
+/* Global Styles */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.7;
+  color: var(--airbnb-dark);
+  background: var(--airbnb-light);
+  font-size: 16px;
+}
+
+/* Header Styles */
+.title {
+  font-family: 'Circular', 'Inter', serif;
+  font-size: 3em;
+  color: var(--airbnb-red);
+  text-align: center;
+  margin: 40px 0 20px 0;
+  text-shadow: 2px 2px 4px rgba(255, 56, 92, 0.2);
+  font-weight: 700;
+}
+
+.author {
+  text-align: center;
+  color: var(--airbnb-grey);
+  font-size: 1.2em;
+  margin-bottom: 40px;
+  font-weight: 300;
+}
+
+/* Main Content Container */
+#content {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  padding: 40px 60px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  border-top: 5px solid var(--airbnb-red);
+}
+
+/* Headings */
+h1 {
+  font-family: 'Circular', 'Inter', serif;
+  color: var(--airbnb-dark);
+  font-size: 2.5em;
+  border-bottom: 4px solid var(--airbnb-red);
+  padding-bottom: 15px;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  font-weight: 700;
+}
+
+h2 {
+  color: var(--airbnb-dark);
+  font-size: 1.8em;
+  margin-top: 40px;
+  margin-bottom: 20px;
+  padding-left: 20px;
+  border-left: 5px solid var(--nyc-orange);
+  font-weight: 600;
+}
+
+h3 {
+  color: var(--brooklyn-brick);
+  font-size: 1.4em;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+/* Table of Contents */
+#TOC {
+  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%);
+  padding: 25px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 0 4px 15px rgba(255, 56, 92, 0.3);
+}
+
+#TOC ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+#TOC a {
+  color: white !important;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: block;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+
+#TOC a:hover {
+  background: rgba(255,255,255,0.2);
+  padding-left: 20px;
+  transform: translateX(5px);
+}
+
+#TOC li {
+  margin: 8px 0;
+}
+
+/* Introduction Section */
+#introduction {
+  background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
+  padding: 30px;
+  border-radius: 10px;
+  border-left: 5px solid var(--airbnb-red);
+  margin: 30px 0;
+  font-size: 1.1em;
+  line-height: 1.8;
+}
+
+/* Tables */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin: 30px 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 0.95em;
+}
+
+table caption {
+  font-weight: 600;
+  color: var(--airbnb-dark);
+  margin-bottom: 15px;
+  font-size: 1.1em;
+  text-align: left;
+  padding-left: 5px;
+}
+
+thead {
+  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%);
+  color: white;
+}
+
+th {
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  color: white;
+}
+
+td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #ffe0e6;
+  color: var(--airbnb-dark);
+}
+
+tr {
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: #fff5f7;
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Alternating row colors */
+tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Code Blocks */
+pre {
+  background: var(--airbnb-light);
+  border: 1px solid #e1e4e8;
+  border-left: 4px solid var(--nyc-orange);
+  padding: 20px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 0.9em;
+  line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+code {
+  background: #f1f3f5;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.9em;
+  color: var(--brooklyn-brick);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: var(--airbnb-dark);
+}
+
+/* Plots and Visualizations */
+.plot-container, 
+img {
+  margin: 30px auto;
+  display: block;
+  max-width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  padding: 20px;
+  background: white;
+  border-top: 4px solid var(--airbnb-red);
+}
+
+/* Result Cards for Metrics */
+.result-card {
+  background: white;
+  padding: 25px;
+  margin: 30px 0;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  border-top: 4px solid var(--airbnb-red);
+}
+
+.metric {
+  display: inline-block;
+  background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
+  padding: 20px 30px;
+  margin: 15px 10px;
+  border-radius: 10px;
+  border-left: 5px solid var(--airbnb-red);
+  min-width: 180px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.metric:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(255, 56, 92, 0.2);
+}
+
+.metric-value {
+  font-size: 2.5em;
+  font-weight: 700;
+  color: var(--airbnb-red);
+  display: block;
+  margin-bottom: 8px;
+  font-family: 'Circular', 'Inter', sans-serif;
+}
+
+.metric-label {
+  font-size: 0.95em;
+  color: var(--airbnb-grey);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+/* Highlight Boxes */
+.highlight-box {
+  background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
+  border-left: 6px solid var(--nyc-yellow);
+  padding: 20px 25px;
+  margin: 25px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(255, 210, 63, 0.2);
+}
+
+.info-box {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border-left: 6px solid var(--nyc-blue);
+  padding: 20px 25px;
+  margin: 25px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 83, 155, 0.2);
+}
+
+.success-box {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border-left: 6px solid var(--central-park);
+  padding: 20px 25px;
+  margin: 25px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(107, 203, 119, 0.2);
+}
+
+.airbnb-box {
+  background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
+  border-left: 6px solid var(--airbnb-red);
+  padding: 20px 25px;
+  margin: 25px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(255, 56, 92, 0.2);
+}
+
+/* Lists */
+ul, ol {
+  line-height: 2;
+  color: var(--airbnb-dark);
+}
+
+li {
+  margin: 10px 0;
+  padding-left: 10px;
+}
+
+ul li::marker {
+  color: var(--airbnb-red);
+  font-weight: bold;
+}
+
+/* Links */
+a {
+  color: var(--airbnb-red);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: var(--brooklyn-brick);
+  border-bottom: 2px solid var(--airbnb-red);
+}
+
+/* Sections with special styling */
+#predictive-modeling {
+  background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
+  padding: 30px;
+  border-radius: 12px;
+  margin: 40px 0;
+  border: 2px solid var(--airbnb-red);
+}
+
+/* Buttons */
+button, .btn {
+  background: var(--airbnb-red);
+  border: none;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.2);
+}
+
+button:hover, .btn:hover {
+  background: var(--brooklyn-brick);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 56, 92, 0.3);
+}
+
+/* Badges */
+.badge {
+  background: var(--nyc-yellow);
+  color: var(--airbnb-dark);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85em;
+  display: inline-block;
+}
+
+/* Horizontal Rule */
+hr {
+  border: none;
+  border-top: 2px solid var(--airbnb-red);
+  margin: 40px 0;
+  opacity: 0.3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  #content {
+    padding: 20px 30px;
+  }
+  
+  .title {
+    font-size: 2em;
+  }
+  
+  h1 {
+    font-size: 1.8em;
+  }
+  
+  h2 {
+    font-size: 1.4em;
+  }
+  
+  .metric {
+    display: block;
+    margin: 15px 0;
+    min-width: auto;
+  }
+  
+  table {
+    font-size: 0.85em;
+  }
+  
+  th, td {
+    padding: 10px 12px;
+  }
+}
+
+/* Print Styles */
+@media print {
+  body {
+    background: white;
+  }
+  
+  #content {
+    box-shadow: none;
+    padding: 20px;
+  }
+  
+  .metric, .result-card {
+    page-break-inside: avoid;
+  }
+  
+  a {
+    color: var(--airbnb-dark);
+    border: none;
+  }
+}
+
+/* Custom scrollbar - Airbnb theme */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--airbnb-light);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%);
+  border-radius: 10px;
+  border: 2px solid var(--airbnb-light);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brooklyn-brick);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseAirbnb {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 56, 92, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 15px rgba(255, 56, 92, 0);
+  }
+}
+
+.result-card,
+.metric {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.metric:hover {
+  animation: pulseAirbnb 2s infinite;
+}
+
+/* Special NYC-themed elements */
+.nyc-accent {
+  color: var(--nyc-yellow);
+  font-weight: 700;
+}
+
+.airbnb-accent {
+  color: var(--airbnb-red);
+  font-weight: 700;
+}
+
+/* Footer styling */
+footer, .footer {
+  text-align: center;
+  padding: 30px;
+  margin-top: 50px;
+  border-top: 3px solid var(--airbnb-red);
+  color: var(--airbnb-grey);
+  font-size: 0.9em;
+}
