@@ -125,16 +125,144 @@ kable(borough_summary, caption = "Distribution of listings and average price by 
 ## Visualization and Spatial Analysis
 
 This section explores how Airbnb listings are distributed across New York City and how prices vary depending on location and room type.
-An interactive map allows users to filter listings by price range, room type, and neighbourhood group, providing a clear and dynamic view of market segmentation.
+One interactive map lets users zoom in and explore Airbnb listings, displaying the name of each property.
 
-MAPS INTERACTIVE
 
+```{r echo=FALSE,message=FALSE}
+# Map leaflet static version
+
+#firstly, let's display the map and specity of it like the zoom, and area of it
+leaflet(airbnb_clean, options = leafletOptions(
+  minZoom = 10,
+  maxZoom = 18,
+  dragging = TRUE
+)) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  setView(lng = -74, lat = 40.7, zoom = 11) %>%
+  setMaxBounds(
+    lng1 = -73.7,
+    lat1 = 40.92,
+    lng2 = -74.3,
+    lat2 = 40.4
+  ) %>%
+  #secondly, we display the airbnb rooms, with a cluster options to see easily every appartments
+  addMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~name,
+    clusterOptions = markerClusterOptions(
+      showCoverageOnHover = TRUE,
+      zoomToBoundsOnClick = TRUE,
+      spiderfyOnMaxZoom = TRUE,
+      removeOutsideVisibleBounds = TRUE,
+      freezeAtZoom = FALSE
+    )
+  )
+```
+
+
+```{r echo=FALSE,include=FALSE,message=FALSE}
+#This another map adds interactive filters for room type, price range, and neighbourhood group.
+#But it doesn't work if not open with RStudio
+# Map leaflet shiny version
+ui <- page_sidebar(
+  title = "AirBnB : New York",
+  sidebar = sidebar(
+    #First filter : price range
+    card(
+      card_header("Price"),
+      sliderInput(
+        "price",
+        "Set value",
+        min = 0,
+        max = 10000,
+        value = c(0,10000)
+      ),
+    ),
+    card(
+    #Second filter : Type of room
+      card_header("Type of room"),
+      checkboxGroupInput(
+        "room",
+        "Select all that apply",
+        choices = list("Entire home/apt" = "Entire home/apt", "Private room" = "Private room", "Shared room" = "Shared room"),
+        selected = 1
+      ),
+    ),
+    card(
+    #Third filter : Neighbourhood group
+      card_header("Neighbourhood group"),
+      checkboxGroupInput(
+        "neighbourhood_group",
+        "Select all that apply",
+        choices = list("Bronx" = "Bronx", "Brooklyn" = "Brookyn", "Manhattan" = "Manhattan", "Queens" = "Queens", "Staten Island" = "Staten Islander"),
+        selected = 1
+      ),
+    )
+  ),
+  card(leafletOutput("map"))
+
+)
+
+
+# Define server logic ----
+server <- function(input, output) {
+
+
+
+dataFiltered <- reactive({
+  req(input$price, length(input$price) == 2)
+
+  airbnb_clean %>%
+    filter(dplyr::between(price, input$price[1], input$price[2])) %>%
+    { if (!is.null(input$room) && length(input$room) > 0) filter(., room_type %in% input$room) else . } %>%
+    { if (!is.null(input$neighbourhood_group) && length(input$neighbourhood_group) > 0) filter(., neighbourhood_group %in% input$neighbourhood_group) else . }
+})
+
+
+  
+output$map <- renderLeaflet({
+  
+  df=dataFiltered()
+  
+  long=c(df$longitude)
+  lati=c(df$latitude)
+  name=c(df$name)
+  
+  leaflet(options=leafletOptions(
+  minZoom = 10,
+  maxZoom = 18,
+  dragging = TRUE
+)) %>%
+  
+  addProviderTiles("CartoDB.Positron")%>%
+  setView(lng = -74, lat = 40.7, zoom = 11)%>%
+  setMaxBounds(
+    lng1 = -73.7,
+    lat1 = 40.92,
+    lng2 = -74.3,
+    lat2 = 40.4
+  )%>%
+  addMarkers(lng=long,lat = lati,popup = name,clusterOptions=markerClusterOptions(
+showCoverageOnHover = TRUE,
+zoomToBoundsOnClick = TRUE,
+spiderfyOnMaxZoom = TRUE,
+removeOutsideVisibleBounds = TRUE,
+freezeAtZoom = FALSE
+) )
+  })
+}
+
+# Run the app ----
+shinyApp(ui = ui, server = server)
+```
 ## Availability and Demand
 
 Listings with fewer available days usually have more reviews, showing higher demand and frequent bookings.
 Those available all year but with few reviews seem less attractive to guests.
 
 ```{r , echo=FALSE, message=FALSE}
+#plot of the number of review by the availibilty, we're using geom_hex() because of the density of points
 ggplot(airbnb_clean, aes(x = availability_365, y = number_of_reviews)) +
   geom_hex()+
   theme_minimal()
@@ -155,10 +283,19 @@ Manhattan and Brooklyn show the highest median prices, confirming their position
 ```{r, echo=FALSE}
 filtered_data <- airbnb_clean #%>%
 
-  
-a = ggplot(filtered_data, aes(x = neighbourhood_group, y = price)) +  geom_boxplot(fill = "lightblue") +  scale_y_log10() +  labs(title = "Distribution of Prices by Neighbourhood (Log Scale)",       x = "Neighbourhood",       y = "Price (log scale)") +  theme_minimal() +  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-a
+ggplot(filtered_data, aes(x = neighbourhood_group, y = price)) +
+  geom_boxplot(fill = "lightblue") +
+  scale_y_log10() + #Applies a logarithmic scale to the y-axis. This is useful when price values vary widely, helping to visualize the data more clearly.
+  labs(
+    title = "Distribution of Prices by Neighbourhood (Log Scale)",
+    x = "Neighbourhood",
+    y = "Price (log scale)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
 ```
 
 
@@ -179,7 +316,7 @@ plots_by_group <- lapply(groups, function(g) {
   }
   ggplot(df, aes(x = reorder(neighbourhood, price, FUN = median), y = price)) +
     geom_boxplot(fill = "lightblue", outlier.alpha = 0.2) +
-    scale_y_log10() +
+    scale_y_log10() + #Applies a logarithmic scale to the y-axis. This is useful when price values vary widely, helping to visualize the data more clearly.
     coord_flip() +
     labs(
       title = paste("Price distribution by neighbourhood —", g, "(log scale)"),
