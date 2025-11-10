@@ -6,6 +6,7 @@ output:
     theme: readable
     toc: true
     toc_float: true
+runtime: shiny
 ---
 
 ```{r setup,include = FALSE,echo=FALSE}
@@ -160,8 +161,9 @@ leaflet(airbnb_clean, options = leafletOptions(
   )
 ```
 
+This map only works by knitting the rmd files on RStudio
 
-```{r echo=FALSE,include=FALSE,message=FALSE}
+```{r echo=FALSE,message=FALSE}
 #This another map adds interactive filters for room type, price range, and neighbourhood group.
 #But it doesn't work if not open with RStudio
 # Map leaflet shiny version
