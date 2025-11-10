@@ -197,7 +197,7 @@ ui <- page_sidebar(
       checkboxGroupInput(
         "neighbourhood_group",
         "Select all that apply",
-        choices = list("Bronx" = "Bronx", "Brooklyn" = "Brookyn", "Manhattan" = "Manhattan", "Queens" = "Queens", "Staten Island" = "Staten Islander"),
+        choices = list("Bronx" = "Bronx", "Brooklyn" = "Brooklyn", "Manhattan" = "Manhattan", "Queens" = "Queens", "Staten Island" = "Staten Island"),
         selected = 1
       ),
     )
