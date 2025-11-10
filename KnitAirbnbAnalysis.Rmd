@@ -1,9 +1,10 @@
 ---
 title: "New York City Airbnb Market Analysis"
-author: "Authors: Antoine, Charles, Mokhmad"
+author: "Authors: Antoine WARTEL, Charles ESPRIET, Mokhmad GUIRIEV"
 subtitle: "Strategic Insights & Predictive Modeling"
 output: 
   html_document:
+    
     theme: default
     toc: true
     toc_float: 
@@ -36,6 +37,8 @@ library(ggplot2)
 library(leaflet)
 library(rpart)
 library(plotly)
+library(shiny)
+library(bslib)
 
 # Set ggplot theme for professional charts
 theme_set(theme_minimal(base_size = 12) +
@@ -337,6 +340,146 @@ ggplot(sample_data, aes(x = availability_365, y = number_of_reviews)) +
 **Strategic Insight:**
 
 Listings with **lower availability** (< 180 days/year) demonstrate significantly higher review counts, indicating superior occupancy rates and market demand. This inverse correlation suggests that properties with limited availability operate at premium positioning with consistent booking patterns.
+
+</div>
+
+## Geographic Distribution Map
+
+The following interactive map displays the spatial distribution of Airbnb listings across New York City. Markers are clustered for enhanced readability, allowing drill-down exploration of listing density by neighborhood.
+
+```{r, fig.height=2, fig.width=3}
+# Map leaflet static version
+
+#firstly, let's display the map and specity of it like the zoom, and area of it
+leaflet(airbnb_clean, options = leafletOptions(
+  minZoom = 10,
+  maxZoom = 18,
+  dragging = TRUE
+)) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  setView(lng = -74, lat = 40.7, zoom = 10) %>%
+  setMaxBounds(
+    lng1 = -73.7,
+    lat1 = 40.92,
+    lng2 = -74.3,
+    lat2 = 40.4
+  ) %>%
+  #secondly, we display the airbnb rooms, with a cluster options to see easily every appartments
+  addMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    popup = ~name,
+    clusterOptions = markerClusterOptions(
+      showCoverageOnHover = TRUE,
+      zoomToBoundsOnClick = TRUE,
+      spiderfyOnMaxZoom = TRUE,
+      removeOutsideVisibleBounds = TRUE,
+      freezeAtZoom = FALSE
+    )
+  )
+```
+
+```{r include=FALSE}
+#This another map adds interactive filters for room type, price range, and neighbourhood group.
+#But it doesn't work if not open with RStudio
+# Map leaflet shiny version
+ui <- page_sidebar(
+  title = "AirBnB : New York",
+  sidebar = sidebar(
+    #First filter : price range
+    card(
+      card_header("Price"),
+      sliderInput(
+        "price",
+        "Set value",
+        min = 0,
+        max = 10000,
+        value = c(0,10000)
+      ),
+    ),
+    card(
+    #Second filter : Type of room
+      card_header("Type of room"),
+      checkboxGroupInput(
+        "room",
+        "Select all that apply",
+        choices = list("Entire home/apt" = "Entire home/apt", "Private room" = "Private room", "Shared room" = "Shared room"),
+        selected = 1
+      ),
+    ),
+    card(
+    #Third filter : Neighbourhood group
+      card_header("Neighbourhood group"),
+      checkboxGroupInput(
+        "neighbourhood_group",
+        "Select all that apply",
+        choices = list("Bronx" = "Bronx", "Brooklyn" = "Brooklyn", "Manhattan" = "Manhattan", "Queens" = "Queens", "Staten Island" = "Staten Island"),
+        selected = 1
+      ),
+    )
+  ),
+  card(leafletOutput("map"))
+
+)
+
+
+# Define server logic ----
+server <- function(input, output) {
+
+
+
+dataFiltered <- reactive({
+  req(input$price, length(input$price) == 2)
+
+  airbnb_clean %>%
+    filter(dplyr::between(price, input$price[1], input$price[2])) %>%
+    { if (!is.null(input$room) && length(input$room) > 0) filter(., room_type %in% input$room) else . } %>%
+    { if (!is.null(input$neighbourhood_group) && length(input$neighbourhood_group) > 0) filter(., neighbourhood_group %in% input$neighbourhood_group) else . }
+})
+
+
+  
+output$map <- renderLeaflet({
+  
+  df=dataFiltered()
+  
+  long=c(df$longitude)
+  lati=c(df$latitude)
+  name=c(df$name)
+  
+  leaflet(options=leafletOptions(
+  minZoom = 10,
+  maxZoom = 18,
+  dragging = TRUE
+)) %>%
+  
+  addProviderTiles("CartoDB.Positron")%>%
+  setView(lng = -74, lat = 40.7, zoom = 11)%>%
+  setMaxBounds(
+    lng1 = -73.7,
+    lat1 = 40.92,
+    lng2 = -74.3,
+    lat2 = 40.4
+  )%>%
+  addMarkers(lng=long,lat = lati,popup = name,clusterOptions=markerClusterOptions(
+showCoverageOnHover = TRUE,
+zoomToBoundsOnClick = TRUE,
+spiderfyOnMaxZoom = TRUE,
+removeOutsideVisibleBounds = TRUE,
+freezeAtZoom = FALSE
+) )
+  })
+}
+
+# Run the app ----
+#shinyApp(ui = ui, server = server) # In commentary because if you run the app during the knit you can not knit again, you will have to delete "runtime: shiny" in the YAML at the top of the Rmd file
+```
+
+<div class="highlight-box">
+
+**Map Interpretation:**
+
+The geographic visualization reveals concentrated listing clusters in **Manhattan** (particularly Lower Manhattan and Midtown) and **Brooklyn** (Williamsburg, Park Slope). This spatial pattern confirms the borough-level statistics and highlights micro-markets with highest competitive intensity.
 
 </div>
 
@@ -765,6 +908,6 @@ Both models achieve comparable performance with RMSE values of approximately **$
 
 **New York City Airbnb Market Analysis**
 
-Made by Antoine, Charles, Mokhmad
+Made by Antoine WARTEL, Charles ESPRIET, Mokhmad GUIRIEV
 
 </div>
