@@ -902,6 +902,103 @@ Both models achieve comparable performance with RMSE values of approximately **$
 
 </div>
 
+## Spatial Model Validation
+
+To assess model performance geographically, the following interactive map displays both actual and predicted prices for each listing. Click on any marker to compare the model's predictions with reality and evaluate prediction accuracy across different NYC neighborhoods.
+
+```{r}
+# Prepare test data with predictions for mapping
+test_with_predictions <- test %>%
+  mutate(
+    predicted_price_lm = expm1(predict(lm_fit, newdata = test)),
+    prediction_error = predicted_price_lm - price,
+    error_pct = abs(prediction_error / price * 100),
+    price_category = cut(price, 
+                         breaks = c(0, 75, 150, 250, 500, Inf),
+                         labels = c("Budget (<$75)", "Economy ($75-150)", 
+                                   "Mid-Range ($150-250)", "Premium ($250-500)", 
+                                   "Luxury (>$500)"))
+  )
+
+# Define color palette based on prediction accuracy
+getColor <- function(error_pct) {
+  sapply(error_pct, function(e) {
+    if (e <= 20) "#2ecc71"       # Green: Good prediction (≤20% error)
+    else if (e <= 40) "#f39c12"  # Orange: Moderate error (20-40%)
+    else "#e74c3c"                # Red: High error (>40%)
+  })
+}
+```
+
+### Interactive Price Comparison Map
+
+```{r, fig.height=2, fig.width=3}
+leaflet(test_with_predictions, options = leafletOptions(
+  minZoom = 10,
+  maxZoom = 18,
+  dragging = TRUE
+)) %>%
+  addProviderTiles("CartoDB.Positron") %>%
+  setView(lng = -74, lat = 40.7, zoom = 10) %>%
+  setMaxBounds(
+    lng1 = -73.7,
+    lat1 = 40.92,
+    lng2 = -74.3,
+    lat2 = 40.4
+  ) %>%
+  addCircleMarkers(
+    lng = ~longitude,
+    lat = ~latitude,
+    radius = 5,
+    color = ~getColor(error_pct),
+    fillOpacity = 0.7,
+    stroke = TRUE,
+    weight = 1,
+    popup = ~paste0(
+      "<div style='min-width: 200px;'>",
+      "<strong style='font-size: 14px;'>", name, "</strong><br/><br/>",
+      "<strong>Location:</strong><br/>",
+      "Borough: ", neighbourhood_group, "<br/>",
+      "Neighborhood: ", neighbourhood, "<br/><br/>",
+      "<strong>Property:</strong><br/>",
+      "Type: ", room_type, "<br/><br/>",
+      "<strong>Pricing Analysis:</strong><br/>",
+      "<span style='color: #2c3e50;'>Actual Price: <strong>$", round(price, 0), "</strong></span><br/>",
+      "<span style='color: #3498db;'>Predicted Price: <strong>$", round(predicted_price_lm, 0), "</strong></span><br/>",
+      "<span style='color: ", ifelse(prediction_error > 0, "#e74c3c", "#2ecc71"), ";'>",
+      "Difference: <strong>", ifelse(prediction_error > 0, "+", ""), "$", round(prediction_error, 0), 
+      " (", ifelse(prediction_error > 0, "+", ""), round(prediction_error / price * 100, 1), "%)</strong></span><br/>",
+      "Category: ", price_category, "<br/><br/>",
+      "<strong>Model Accuracy:</strong> ",
+      ifelse(error_pct <= 20, "Excellent", 
+             ifelse(error_pct <= 40, "Moderate", "Needs improvement")),
+      "</div>"
+    )
+  ) %>%
+  addLegend(
+    position = "bottomright",
+    colors = c("#2ecc71", "#f39c12", "#e74c3c"),
+    labels = c("Good Prediction (≤20% error)", "Moderate (20-40% error)", "High error (>40%)"),
+    title = "Prediction Accuracy",
+    opacity = 0.8
+  )
+```
+
+<div class="highlight-box">
+
+**Spatial Validation Insights:**
+
+The interactive map reveals key patterns in model performance:
+
+- **Color Coding:** Green markers indicate accurate predictions (≤20% error), orange shows moderate accuracy (20-40%), and red indicates high prediction errors (>40%)
+- **Geographic Distribution:** Click on markers to explore how prediction accuracy varies across neighborhoods
+- **Price Comparison:** Each popup displays actual vs predicted prices with the difference highlighted in color (red for overprediction, green for underprediction)
+- **Accuracy Assessment:** The model performs best on mid-range properties in established neighborhoods, with higher errors on luxury listings and properties with unique characteristics
+
+**Key Finding:** Most markers are green or orange, indicating that the model achieves reasonable accuracy across most of NYC, with errors primarily concentrated in the luxury segment and properties with exceptional features not captured by our current variables.
+
+</div>
+
 ---
 
 <div style="text-align: center; padding: 60px 40px; margin-top: 60px; border-top: 3px solid #e5e5e5; background: #fafafa;">
