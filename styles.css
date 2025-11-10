@@ -1,0 +1,699 @@
+/* ===================================
+   NYC Airbnb Business Analysis
+   Professional Corporate Theme
+   =================================== */
+
+/* Import Professional Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
+
+/* Color Variables - Professional Business Palette */
+:root {
+  --primary-brand: #FF385C;
+  --secondary-brand: #222222;
+  --accent-gold: #D4AF37;
+  --business-navy: #1a2332;
+  --business-blue: #2563eb;
+  --success-green: #059669;
+  --warning-amber: #d97706;
+  --error-red: #dc2626;
+  --neutral-50: #fafafa;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+}
+
+/* Global Styles */
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.65;
+  color: var(--neutral-700);
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+  font-size: 16px;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Executive Header */
+.title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3.5em;
+  font-weight: 800;
+  color: var(--business-navy);
+  text-align: center;
+  margin: 50px 0 15px 0;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.title::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-brand) 0%, var(--accent-gold) 100%);
+  margin: 25px auto;
+  border-radius: 2px;
+}
+
+/* Header Organization - Title, Author, Subtitle */
+#header {
+  display: flex;
+  flex-direction: column;
+}
+
+#header .title {
+  order: 1;
+}
+
+#header .author {
+  order: 2;
+}
+
+#header h3.subtitle {
+  order: 3;
+  text-align: center;
+  color: var(--neutral-600);
+  font-size: 1.4em;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+#header .date {
+  order: 4;
+}
+
+.author {
+  text-align: center;
+  color: var(--neutral-600);
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.date {
+  text-align: center;
+  color: var(--neutral-600);
+  font-size: 0.95em;
+  margin-bottom: 60px;
+  font-weight: 400;
+}
+
+/* Main Content Container */
+#content {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: white;
+  padding: 60px 80px;
+  box-shadow: var(--shadow-xl);
+  border-radius: 0;
+  border-top: 6px solid var(--primary-brand);
+}
+
+/* Professional Headings */
+h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--business-navy);
+  font-size: 2.5em;
+  font-weight: 700;
+  border-bottom: 3px solid var(--neutral-200);
+  padding-bottom: 20px;
+  margin-top: 80px;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+h1::before {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 80px;
+  height: 3px;
+  background: var(--primary-brand);
+}
+
+h1 .header-section-number {
+  color: var(--primary-brand);
+  font-weight: 800;
+  margin-right: 15px;
+}
+
+h2 {
+  font-family: 'Inter', sans-serif;
+  color: var(--business-navy);
+  font-size: 1.75em;
+  font-weight: 700;
+  margin-top: 50px;
+  margin-bottom: 25px;
+  letter-spacing: -0.01em;
+}
+
+h2 .header-section-number {
+  color: var(--primary-brand);
+  font-weight: 800;
+  margin-right: 12px;
+}
+
+h3 {
+  font-family: 'Inter', sans-serif;
+  color: var(--neutral-800);
+  font-size: 1.35em;
+  font-weight: 600;
+  margin-top: 35px;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+h3 .header-section-number {
+  color: var(--accent-gold);
+  font-weight: 700;
+  margin-right: 10px;
+}
+
+/* Executive Table of Contents */
+#TOC {
+  background: var(--business-navy);
+  padding: 30px;
+  border-radius: 0;
+  border: none;
+  box-shadow: var(--shadow-lg);
+  border-left: 4px solid var(--accent-gold);
+}
+
+#TOC::before {
+  content: 'TABLE OF CONTENTS';
+  display: block;
+  color: var(--accent-gold);
+  font-size: 0.75em;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+#TOC ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+#TOC > ul > li {
+  margin: 0;
+}
+
+#TOC > ul > li > a {
+  color: white !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1em;
+  transition: all 0.3s ease;
+  display: block;
+  padding: 14px 18px;
+  border-radius: 0;
+  margin: 3px 0;
+  border-left: 3px solid transparent;
+  letter-spacing: 0.3px;
+}
+
+#TOC > ul > li > a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-left-color: var(--primary-brand);
+  padding-left: 25px;
+}
+
+.tocify-header.active,
+#TOC a.active {
+  background: rgba(255, 56, 92, 0.15) !important;
+  border-left-color: var(--accent-gold) !important;
+  color: white !important;
+  font-weight: 700 !important;
+}
+
+/* Executive Summary / Introduction Box */
+.info-box {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-left: 6px solid var(--business-blue);
+  padding: 35px 40px;
+  margin: 40px 0;
+  border-radius: 0;
+  box-shadow: var(--shadow-md);
+  position: relative;
+}
+
+.info-box::before {
+  content: 'EXECUTIVE SUMMARY';
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: var(--business-blue);
+  color: white;
+  padding: 5px 15px;
+  font-size: 0.7em;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  border-radius: 3px;
+}
+
+.info-box h2 {
+  margin-top: 15px;
+  font-size: 1.5em;
+}
+
+/* Professional Tables */
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin: 40px 0;
+  box-shadow: var(--shadow-md);
+  border-radius: 0;
+  overflow: hidden;
+  font-size: 0.95em;
+  border: 1px solid var(--neutral-200);
+}
+
+table caption {
+  font-weight: 700;
+  color: var(--business-navy);
+  margin-bottom: 20px;
+  font-size: 1.1em;
+  text-align: left;
+  padding-left: 0;
+  letter-spacing: -0.01em;
+}
+
+thead {
+  background: var(--business-navy);
+  color: white;
+}
+
+th {
+  padding: 18px 24px;
+  text-align: left;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  color: white;
+  border-bottom: 2px solid var(--accent-gold);
+}
+
+td {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--neutral-200);
+  color: var(--neutral-700);
+  font-weight: 500;
+}
+
+tr {
+  transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: var(--neutral-50);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+/* Data emphasis in tables */
+td:first-child {
+  font-weight: 600;
+  color: var(--neutral-800);
+}
+
+/* Code Blocks - Minimal Professional Style */
+pre {
+  background: var(--neutral-50);
+  border: 1px solid var(--neutral-200);
+  border-left: 4px solid var(--neutral-400);
+  padding: 24px;
+  border-radius: 0;
+  overflow-x: auto;
+  font-size: 0.88em;
+  line-height: 1.6;
+  box-shadow: var(--shadow-sm);
+}
+
+code {
+  background: var(--neutral-100);
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-size: 0.88em;
+  color: var(--neutral-800);
+  border: 1px solid var(--neutral-200);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: var(--neutral-800);
+  border: none;
+}
+
+/* Professional Visualizations */
+.plot-container, 
+img {
+  margin: 50px auto;
+  display: block;
+  max-width: 100%;
+  border-radius: 0;
+  box-shadow: var(--shadow-md);
+  padding: 0;
+  background: white;
+  border: 1px solid var(--neutral-200);
+}
+
+/* Executive Metrics Cards */
+.result-card {
+  background: white;
+  padding: 35px 40px;
+  margin: 40px 0;
+  border-radius: 0;
+  box-shadow: var(--shadow-md);
+  border-top: 4px solid var(--primary-brand);
+  border: 1px solid var(--neutral-200);
+  border-top: 4px solid var(--primary-brand);
+}
+
+.metric {
+  display: inline-block;
+  background: white;
+  padding: 30px 35px;
+  margin: 15px 10px;
+  border-radius: 0;
+  border: 2px solid var(--neutral-200);
+  border-left: 5px solid var(--primary-brand);
+  min-width: 200px;
+  text-align: left;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.metric:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-left-color: var(--accent-gold);
+}
+
+.metric-value {
+  font-size: 3em;
+  font-weight: 800;
+  color: var(--business-navy);
+  display: block;
+  margin-bottom: 8px;
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.02em;
+}
+
+.metric-label {
+  font-size: 0.85em;
+  color: var(--neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+}
+
+/* Professional Call-out Boxes */
+.highlight-box {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-left: 6px solid var(--warning-amber);
+  padding: 25px 30px;
+  margin: 35px 0;
+  border-radius: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.highlight-box::before {
+  content: '⚠ KEY INSIGHT';
+  display: block;
+  color: var(--warning-amber);
+  font-size: 0.75em;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+.success-box {
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-left: 6px solid var(--success-green);
+  padding: 25px 30px;
+  margin: 35px 0;
+  border-radius: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.success-box::before {
+  content: '✓ FINDING';
+  display: block;
+  color: var(--success-green);
+  font-size: 0.75em;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
+}
+
+/* Lists - Professional styling */
+ul, ol {
+  line-height: 1.9;
+  color: var(--neutral-700);
+  padding-left: 25px;
+}
+
+li {
+  margin: 12px 0;
+  padding-left: 5px;
+}
+
+ul li::marker {
+  color: var(--primary-brand);
+  font-weight: bold;
+}
+
+strong {
+  font-weight: 700;
+  color: var(--neutral-800);
+}
+
+/* Links - Minimal Professional */
+a {
+  color: var(--business-blue);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+a:hover {
+  color: var(--primary-brand);
+  border-bottom-color: var(--primary-brand);
+}
+
+/* Horizontal Divider */
+hr {
+  border: none;
+  border-top: 2px solid var(--neutral-200);
+  margin: 60px 0;
+  opacity: 1;
+}
+
+/* Section Breaks */
+h1 + hr {
+  margin-top: -20px;
+  margin-bottom: 40px;
+  border-top: 1px solid var(--neutral-200);
+}
+
+/* Tabset Pills - Professional */
+.nav-tabs {
+  border-bottom: 2px solid var(--neutral-200);
+  margin-bottom: 30px;
+}
+
+.nav-tabs > li > a {
+  color: var(--neutral-700);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-weight: 600;
+  padding: 12px 24px;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  letter-spacing: 0.5px;
+}
+
+.nav-tabs > li > a:hover {
+  background: var(--neutral-50);
+  border-bottom-color: var(--neutral-300);
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid var(--primary-brand);
+  color: var(--business-navy);
+  font-weight: 700;
+}
+
+/* Professional Footer */
+footer, .footer {
+  text-align: center;
+  padding: 50px 40px;
+  margin-top: 80px;
+  border-top: 3px solid var(--neutral-200);
+  color: var(--neutral-600);
+  font-size: 0.9em;
+  background: var(--neutral-50);
+}
+
+/* Custom scrollbar - Corporate */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neutral-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-400);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-600);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  #content {
+    padding: 50px 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  #content {
+    padding: 30px 25px;
+  }
+  
+  .title {
+    font-size: 2.5em;
+  }
+  
+  h1 {
+    font-size: 2em;
+  }
+  
+  h2 {
+    font-size: 1.5em;
+  }
+  
+  .metric {
+    display: block;
+    margin: 15px 0;
+    min-width: auto;
+  }
+  
+  table {
+    font-size: 0.85em;
+  }
+  
+  th, td {
+    padding: 12px 16px;
+  }
+}
+
+/* Print Optimization */
+@media print {
+  body {
+    background: white;
+  }
+  
+  #content {
+    box-shadow: none;
+    padding: 20px;
+    border-top: none;
+  }
+  
+  .metric, .result-card {
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+  
+  a {
+    color: var(--neutral-800);
+    border: none;
+  }
+  
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  .info-box, .highlight-box, .success-box {
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
+  }
+}
+
+/* Animation - Subtle Professional */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.result-card,
+.metric,
+table {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+/* Business Intelligence Styling */
+.kpi-row {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin: 40px 0;
+}
+
+/* Professional Figure Captions */
+.figure {
+  margin: 40px 0;
+}
+
+.caption {
+  font-size: 0.9em;
+  color: var(--neutral-600);
+  font-style: italic;
+  text-align: center;
+  margin-top: 15px;
+  padding: 0 20px;
+}
