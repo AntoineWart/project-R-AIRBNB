@@ -161,7 +161,7 @@ leaflet(airbnb_clean, options = leafletOptions(
   )
 ```
 
-This map only works by knitting the rmd files on RStudio
+The map below only works by knitting the rmd files on RStudio
 
 ```{r echo=FALSE,message=FALSE}
 #This another map adds interactive filters for room type, price range, and neighbourhood group.
