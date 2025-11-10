@@ -1,100 +1,206 @@
 /* ===================================
-   NYC Airbnb Analysis - Airbnb Theme
-   Colors: Airbnb Red + NYC Palette
+   NYC Airbnb Business Analysis
+   Professional Corporate Theme
    =================================== */
 
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Circular:wght@700&display=swap');
+/* Import Professional Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap');
 
-/* Color Variables */
+/* Color Variables - Professional Business Palette */
 :root {
-  --airbnb-red: #FF385C;
-  --airbnb-dark: #222222;
-  --airbnb-grey: #717171;
-  --airbnb-light: #F7F7F7;
-  --nyc-yellow: #FFD23F;
-  --nyc-blue: #00539B;
-  --nyc-orange: #FF6B35;
-  --brooklyn-brick: #BC4749;
-  --central-park: #6BCB77;
+  --primary-brand: #FF385C;
+  --secondary-brand: #222222;
+  --accent-gold: #D4AF37;
+  --business-navy: #1a2332;
+  --business-blue: #2563eb;
+  --success-green: #059669;
+  --warning-amber: #d97706;
+  --error-red: #dc2626;
+  --neutral-50: #fafafa;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
 }
 
 /* Global Styles */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  line-height: 1.7;
-  color: var(--airbnb-dark);
-  background: var(--airbnb-light);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.65;
+  color: var(--neutral-700);
+  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
   font-size: 16px;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Header Styles */
+/* Executive Header */
 .title {
-  font-family: 'Circular', 'Inter', serif;
-  font-size: 3em;
-  color: var(--airbnb-red);
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 3.5em;
+  font-weight: 800;
+  color: var(--business-navy);
   text-align: center;
-  margin: 40px 0 20px 0;
-  text-shadow: 2px 2px 4px rgba(255, 56, 92, 0.2);
-  font-weight: 700;
+  margin: 50px 0 15px 0;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.title::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-brand) 0%, var(--accent-gold) 100%);
+  margin: 25px auto;
+  border-radius: 2px;
+}
+
+/* Header Organization - Title, Author, Subtitle */
+#header {
+  display: flex;
+  flex-direction: column;
+}
+
+#header .title {
+  order: 1;
+}
+
+#header .author {
+  order: 2;
+}
+
+#header h3.subtitle {
+  order: 3;
+  text-align: center;
+  color: var(--neutral-600);
+  font-size: 1.4em;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+#header .date {
+  order: 4;
 }
 
 .author {
   text-align: center;
-  color: var(--airbnb-grey);
-  font-size: 1.2em;
-  margin-bottom: 40px;
-  font-weight: 300;
+  color: var(--neutral-600);
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.date {
+  text-align: center;
+  color: var(--neutral-600);
+  font-size: 0.95em;
+  margin-bottom: 60px;
+  font-weight: 400;
 }
 
 /* Main Content Container */
 #content {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   background: white;
-  padding: 40px 60px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-  border-radius: 12px;
-  border-top: 5px solid var(--airbnb-red);
+  padding: 60px 80px;
+  box-shadow: var(--shadow-xl);
+  border-radius: 0;
+  border-top: 6px solid var(--primary-brand);
 }
 
-/* Headings */
+/* Professional Headings */
 h1 {
-  font-family: 'Circular', 'Inter', serif;
-  color: var(--airbnb-dark);
+  font-family: 'Playfair Display', Georgia, serif;
+  color: var(--business-navy);
   font-size: 2.5em;
-  border-bottom: 4px solid var(--airbnb-red);
-  padding-bottom: 15px;
-  margin-top: 50px;
-  margin-bottom: 30px;
   font-weight: 700;
+  border-bottom: 3px solid var(--neutral-200);
+  padding-bottom: 20px;
+  margin-top: 80px;
+  margin-bottom: 40px;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+h1::before {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 80px;
+  height: 3px;
+  background: var(--primary-brand);
+}
+
+h1 .header-section-number {
+  color: var(--primary-brand);
+  font-weight: 800;
+  margin-right: 15px;
 }
 
 h2 {
-  color: var(--airbnb-dark);
-  font-size: 1.8em;
-  margin-top: 40px;
-  margin-bottom: 20px;
-  padding-left: 20px;
-  border-left: 5px solid var(--nyc-orange);
-  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: var(--business-navy);
+  font-size: 1.75em;
+  font-weight: 700;
+  margin-top: 50px;
+  margin-bottom: 25px;
+  letter-spacing: -0.01em;
+}
+
+h2 .header-section-number {
+  color: var(--primary-brand);
+  font-weight: 800;
+  margin-right: 12px;
 }
 
 h3 {
-  color: var(--brooklyn-brick);
-  font-size: 1.4em;
-  margin-top: 30px;
-  margin-bottom: 15px;
+  font-family: 'Inter', sans-serif;
+  color: var(--neutral-800);
+  font-size: 1.35em;
   font-weight: 600;
+  margin-top: 35px;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
 }
 
-/* Table of Contents */
+h3 .header-section-number {
+  color: var(--accent-gold);
+  font-weight: 700;
+  margin-right: 10px;
+}
+
+/* Executive Table of Contents */
 #TOC {
-  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%);
-  padding: 25px;
-  border-radius: 10px;
+  background: var(--business-navy);
+  padding: 30px;
+  border-radius: 0;
   border: none;
-  box-shadow: 0 4px 15px rgba(255, 56, 92, 0.3);
+  box-shadow: var(--shadow-lg);
+  border-left: 4px solid var(--accent-gold);
+}
+
+#TOC::before {
+  content: 'TABLE OF CONTENTS';
+  display: block;
+  color: var(--accent-gold);
+  font-size: 0.75em;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 #TOC ul {
@@ -102,77 +208,112 @@ h3 {
   padding-left: 0;
 }
 
-#TOC a {
+#TOC > ul > li {
+  margin: 0;
+}
+
+#TOC > ul > li > a {
   color: white !important;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 1em;
   transition: all 0.3s ease;
   display: block;
-  padding: 8px 12px;
-  border-radius: 5px;
+  padding: 14px 18px;
+  border-radius: 0;
+  margin: 3px 0;
+  border-left: 3px solid transparent;
+  letter-spacing: 0.3px;
 }
 
-#TOC a:hover {
-  background: rgba(255,255,255,0.2);
-  padding-left: 20px;
-  transform: translateX(5px);
+#TOC > ul > li > a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-left-color: var(--primary-brand);
+  padding-left: 25px;
 }
 
-#TOC li {
-  margin: 8px 0;
+.tocify-header.active,
+#TOC a.active {
+  background: rgba(255, 56, 92, 0.15) !important;
+  border-left-color: var(--accent-gold) !important;
+  color: white !important;
+  font-weight: 700 !important;
 }
 
-/* Introduction Section */
-#introduction {
-  background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
-  padding: 30px;
-  border-radius: 10px;
-  border-left: 5px solid var(--airbnb-red);
-  margin: 30px 0;
-  font-size: 1.1em;
-  line-height: 1.8;
+/* Executive Summary / Introduction Box */
+.info-box {
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-left: 6px solid var(--business-blue);
+  padding: 35px 40px;
+  margin: 40px 0;
+  border-radius: 0;
+  box-shadow: var(--shadow-md);
+  position: relative;
 }
 
-/* Tables */
+.info-box::before {
+  content: 'EXECUTIVE SUMMARY';
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: var(--business-blue);
+  color: white;
+  padding: 5px 15px;
+  font-size: 0.7em;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  border-radius: 3px;
+}
+
+.info-box h2 {
+  margin-top: 15px;
+  font-size: 1.5em;
+}
+
+/* Professional Tables */
 table {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
-  margin: 30px 0;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  border-radius: 10px;
+  margin: 40px 0;
+  box-shadow: var(--shadow-md);
+  border-radius: 0;
   overflow: hidden;
   font-size: 0.95em;
+  border: 1px solid var(--neutral-200);
 }
 
 table caption {
-  font-weight: 600;
-  color: var(--airbnb-dark);
-  margin-bottom: 15px;
+  font-weight: 700;
+  color: var(--business-navy);
+  margin-bottom: 20px;
   font-size: 1.1em;
   text-align: left;
-  padding-left: 5px;
+  padding-left: 0;
+  letter-spacing: -0.01em;
 }
 
 thead {
-  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%);
+  background: var(--business-navy);
   color: white;
 }
 
 th {
-  padding: 16px 20px;
+  padding: 18px 24px;
   text-align: left;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  font-size: 0.85em;
+  font-size: 0.8em;
   color: white;
+  border-bottom: 2px solid var(--accent-gold);
 }
 
 td {
-  padding: 14px 20px;
-  border-bottom: 1px solid #ffe0e6;
-  color: var(--airbnb-dark);
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--neutral-200);
+  color: var(--neutral-700);
+  font-weight: 500;
 }
 
 tr {
@@ -180,233 +321,293 @@ tr {
 }
 
 tbody tr:hover {
-  background-color: #fff5f7;
+  background-color: var(--neutral-50);
 }
 
 tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* Alternating row colors */
 tbody tr:nth-child(even) {
   background-color: #fafafa;
 }
 
-/* Code Blocks */
+/* Data emphasis in tables */
+td:first-child {
+  font-weight: 600;
+  color: var(--neutral-800);
+}
+
+/* Code Blocks - Minimal Professional Style */
 pre {
-  background: var(--airbnb-light);
-  border: 1px solid #e1e4e8;
-  border-left: 4px solid var(--nyc-orange);
-  padding: 20px;
-  border-radius: 8px;
+  background: var(--neutral-50);
+  border: 1px solid var(--neutral-200);
+  border-left: 4px solid var(--neutral-400);
+  padding: 24px;
+  border-radius: 0;
   overflow-x: auto;
-  font-size: 0.9em;
-  line-height: 1.5;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  font-size: 0.88em;
+  line-height: 1.6;
+  box-shadow: var(--shadow-sm);
 }
 
 code {
-  background: #f1f3f5;
+  background: var(--neutral-100);
   padding: 3px 8px;
-  border-radius: 4px;
-  font-family: 'Consolas', 'Monaco', monospace;
-  font-size: 0.9em;
-  color: var(--brooklyn-brick);
+  border-radius: 3px;
+  font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+  font-size: 0.88em;
+  color: var(--neutral-800);
+  border: 1px solid var(--neutral-200);
 }
 
 pre code {
   background: none;
   padding: 0;
-  color: var(--airbnb-dark);
+  color: var(--neutral-800);
+  border: none;
 }
 
-/* Plots and Visualizations */
+/* Professional Visualizations */
 .plot-container, 
 img {
-  margin: 30px auto;
+  margin: 50px auto;
   display: block;
   max-width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-  padding: 20px;
+  border-radius: 0;
+  box-shadow: var(--shadow-md);
+  padding: 0;
   background: white;
-  border-top: 4px solid var(--airbnb-red);
+  border: 1px solid var(--neutral-200);
 }
 
-/* Result Cards for Metrics */
+/* Executive Metrics Cards */
 .result-card {
   background: white;
-  padding: 25px;
-  margin: 30px 0;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-  border-top: 4px solid var(--airbnb-red);
+  padding: 35px 40px;
+  margin: 40px 0;
+  border-radius: 0;
+  box-shadow: var(--shadow-md);
+  border-top: 4px solid var(--primary-brand);
+  border: 1px solid var(--neutral-200);
+  border-top: 4px solid var(--primary-brand);
 }
 
 .metric {
   display: inline-block;
-  background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
-  padding: 20px 30px;
+  background: white;
+  padding: 30px 35px;
   margin: 15px 10px;
-  border-radius: 10px;
-  border-left: 5px solid var(--airbnb-red);
-  min-width: 180px;
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 0;
+  border: 2px solid var(--neutral-200);
+  border-left: 5px solid var(--primary-brand);
+  min-width: 200px;
+  text-align: left;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
 }
 
 .metric:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(255, 56, 92, 0.2);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-left-color: var(--accent-gold);
 }
 
 .metric-value {
-  font-size: 2.5em;
-  font-weight: 700;
-  color: var(--airbnb-red);
+  font-size: 3em;
+  font-weight: 800;
+  color: var(--business-navy);
   display: block;
   margin-bottom: 8px;
-  font-family: 'Circular', 'Inter', sans-serif;
+  font-family: 'Playfair Display', Georgia, serif;
+  letter-spacing: -0.02em;
 }
 
 .metric-label {
-  font-size: 0.95em;
-  color: var(--airbnb-grey);
+  font-size: 0.85em;
+  color: var(--neutral-600);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  font-weight: 600;
+  letter-spacing: 1.5px;
+  font-weight: 700;
 }
 
-/* Highlight Boxes */
+/* Professional Call-out Boxes */
 .highlight-box {
-  background: linear-gradient(135deg, #fff9c4 0%, #fff59d 100%);
-  border-left: 6px solid var(--nyc-yellow);
-  padding: 20px 25px;
-  margin: 25px 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(255, 210, 63, 0.2);
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border-left: 6px solid var(--warning-amber);
+  padding: 25px 30px;
+  margin: 35px 0;
+  border-radius: 0;
+  box-shadow: var(--shadow-sm);
 }
 
-.info-box {
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  border-left: 6px solid var(--nyc-blue);
-  padding: 20px 25px;
-  margin: 25px 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 83, 155, 0.2);
+.highlight-box::before {
+  content: '⚠ KEY INSIGHT';
+  display: block;
+  color: var(--warning-amber);
+  font-size: 0.75em;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
 }
 
 .success-box {
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  border-left: 6px solid var(--central-park);
-  padding: 20px 25px;
-  margin: 25px 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(107, 203, 119, 0.2);
+  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+  border-left: 6px solid var(--success-green);
+  padding: 25px 30px;
+  margin: 35px 0;
+  border-radius: 0;
+  box-shadow: var(--shadow-sm);
 }
 
-.airbnb-box {
-  background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
-  border-left: 6px solid var(--airbnb-red);
-  padding: 20px 25px;
-  margin: 25px 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(255, 56, 92, 0.2);
+.success-box::before {
+  content: '✓ FINDING';
+  display: block;
+  color: var(--success-green);
+  font-size: 0.75em;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  margin-bottom: 12px;
 }
 
-/* Lists */
+/* Lists - Professional styling */
 ul, ol {
-  line-height: 2;
-  color: var(--airbnb-dark);
+  line-height: 1.9;
+  color: var(--neutral-700);
+  padding-left: 25px;
 }
 
 li {
-  margin: 10px 0;
-  padding-left: 10px;
+  margin: 12px 0;
+  padding-left: 5px;
 }
 
 ul li::marker {
-  color: var(--airbnb-red);
+  color: var(--primary-brand);
   font-weight: bold;
 }
 
-/* Links */
+strong {
+  font-weight: 700;
+  color: var(--neutral-800);
+}
+
+/* Links - Minimal Professional */
 a {
-  color: var(--airbnb-red);
+  color: var(--business-blue);
   text-decoration: none;
-  border-bottom: 2px solid transparent;
-  transition: all 0.3s ease;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s ease;
+  font-weight: 500;
 }
 
 a:hover {
-  color: var(--brooklyn-brick);
-  border-bottom: 2px solid var(--airbnb-red);
+  color: var(--primary-brand);
+  border-bottom-color: var(--primary-brand);
 }
 
-/* Sections with special styling */
-#predictive-modeling {
-  background: linear-gradient(135deg, #fff5f7 0%, #ffe0e6 100%);
-  padding: 30px;
-  border-radius: 12px;
-  margin: 40px 0;
-  border: 2px solid var(--airbnb-red);
-}
-
-/* Buttons */
-button, .btn {
-  background: var(--airbnb-red);
-  border: none;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 1em;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(255, 56, 92, 0.2);
-}
-
-button:hover, .btn:hover {
-  background: var(--brooklyn-brick);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 56, 92, 0.3);
-}
-
-/* Badges */
-.badge {
-  background: var(--nyc-yellow);
-  color: var(--airbnb-dark);
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.85em;
-  display: inline-block;
-}
-
-/* Horizontal Rule */
+/* Horizontal Divider */
 hr {
   border: none;
-  border-top: 2px solid var(--airbnb-red);
-  margin: 40px 0;
-  opacity: 0.3;
+  border-top: 2px solid var(--neutral-200);
+  margin: 60px 0;
+  opacity: 1;
+}
+
+/* Section Breaks */
+h1 + hr {
+  margin-top: -20px;
+  margin-bottom: 40px;
+  border-top: 1px solid var(--neutral-200);
+}
+
+/* Tabset Pills - Professional */
+.nav-tabs {
+  border-bottom: 2px solid var(--neutral-200);
+  margin-bottom: 30px;
+}
+
+.nav-tabs > li > a {
+  color: var(--neutral-700);
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-weight: 600;
+  padding: 12px 24px;
+  margin-right: 5px;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 0.85em;
+  letter-spacing: 0.5px;
+}
+
+.nav-tabs > li > a:hover {
+  background: var(--neutral-50);
+  border-bottom-color: var(--neutral-300);
+}
+
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
+.nav-tabs > li.active > a:focus {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid var(--primary-brand);
+  color: var(--business-navy);
+  font-weight: 700;
+}
+
+/* Professional Footer */
+footer, .footer {
+  text-align: center;
+  padding: 50px 40px;
+  margin-top: 80px;
+  border-top: 3px solid var(--neutral-200);
+  color: var(--neutral-600);
+  font-size: 0.9em;
+  background: var(--neutral-50);
+}
+
+/* Custom scrollbar - Corporate */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--neutral-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-400);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-600);
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+  #content {
+    padding: 50px 60px;
+  }
+}
+
 @media (max-width: 768px) {
   #content {
-    padding: 20px 30px;
+    padding: 30px 25px;
   }
   
   .title {
-    font-size: 2em;
+    font-size: 2.5em;
   }
   
   h1 {
-    font-size: 1.8em;
+    font-size: 2em;
   }
   
   h2 {
-    font-size: 1.4em;
+    font-size: 1.5em;
   }
   
   .metric {
@@ -420,11 +621,11 @@ hr {
   }
   
   th, td {
-    padding: 10px 12px;
+    padding: 12px 16px;
   }
 }
 
-/* Print Styles */
+/* Print Optimization */
 @media print {
   body {
     background: white;
@@ -433,44 +634,35 @@ hr {
   #content {
     box-shadow: none;
     padding: 20px;
+    border-top: none;
   }
   
   .metric, .result-card {
     page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ccc;
   }
   
   a {
-    color: var(--airbnb-dark);
+    color: var(--neutral-800);
     border: none;
+  }
+  
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  .info-box, .highlight-box, .success-box {
+    border: 1px solid #ccc;
+    page-break-inside: avoid;
   }
 }
 
-/* Custom scrollbar - Airbnb theme */
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--airbnb-light);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, var(--airbnb-red) 0%, var(--brooklyn-brick) 100%);
-  border-radius: 10px;
-  border: 2px solid var(--airbnb-light);
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--brooklyn-brick);
-}
-
-/* Animations */
-@keyframes fadeIn {
+/* Animation - Subtle Professional */
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -478,41 +670,30 @@ hr {
   }
 }
 
-@keyframes pulseAirbnb {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(255, 56, 92, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 15px rgba(255, 56, 92, 0);
-  }
-}
-
 .result-card,
-.metric {
-  animation: fadeIn 0.6s ease-out;
+.metric,
+table {
+  animation: fadeInUp 0.4s ease-out;
 }
 
-.metric:hover {
-  animation: pulseAirbnb 2s infinite;
+/* Business Intelligence Styling */
+.kpi-row {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  margin: 40px 0;
 }
 
-/* Special NYC-themed elements */
-.nyc-accent {
-  color: var(--nyc-yellow);
-  font-weight: 700;
+/* Professional Figure Captions */
+.figure {
+  margin: 40px 0;
 }
 
-.airbnb-accent {
-  color: var(--airbnb-red);
-  font-weight: 700;
-}
-
-/* Footer styling */
-footer, .footer {
-  text-align: center;
-  padding: 30px;
-  margin-top: 50px;
-  border-top: 3px solid var(--airbnb-red);
-  color: var(--airbnb-grey);
+.caption {
   font-size: 0.9em;
+  color: var(--neutral-600);
+  font-style: italic;
+  text-align: center;
+  margin-top: 15px;
+  padding: 0 20px;
 }
